@@ -1,0 +1,6 @@
+main: fr.mathdu07.visualshop.VisualShop
+version: 0.1
+name: VisualShop
+description: A basic plugin to sell items as administrator
+author: mathdu07
+depend: [Vault]
