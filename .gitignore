@@ -8,3 +8,4 @@
 # Eclipse files
 .project
 .classpath
+/bin
