@@ -2,6 +2,9 @@ package fr.mathdu07.visualshop;
 
 import java.util.logging.Level;
 
+import net.milkbowl.vault.economy.Economy;
+
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.mathdu07.visualshop.config.Config;
@@ -18,6 +21,7 @@ public class VisualShop extends JavaPlugin {
 	private EntityListener entityListener;
 	private Config config;
 	private Templates templates;
+	private Economy economy;
 	
 	private boolean debug = false;
 	
@@ -33,8 +37,15 @@ public class VisualShop extends JavaPlugin {
 		
 		if (!config.getBooleanProperty(Config.ENABLED)) {
 			warn("Disabling the plugin, specified by the config");
-			onDisable();
 			this.setEnabled(false);
+			return;
+		}
+		
+		if (!registerEconomy()) {
+			severe("Could not find economy plugin, is Vault installed ?");
+			severe("Disabling the plugin ...");
+			this.setEnabled(false);
+			return;
 		}
 		
 		getServer().getPluginManager().registerEvents(entityListener, this);
@@ -52,6 +63,19 @@ public class VisualShop extends JavaPlugin {
 		templates = new Templates(this);
 		
 		debug = config.getBooleanProperty(Config.DEBUG);
+	}
+	
+	public Economy getEconomy() {
+		return economy;
+	}
+	
+	private boolean registerEconomy() {
+        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
+        }
+
+        return (economy != null);
 	}
 	
 	public static Config getVSConfig() {
