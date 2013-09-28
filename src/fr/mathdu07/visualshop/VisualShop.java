@@ -1,13 +1,16 @@
 package fr.mathdu07.visualshop;
 
+import java.io.IOException;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.mathdu07.visualshop.config.Config;
+import fr.mathdu07.visualshop.config.ShopSaver;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.listener.EntityListener;
 import fr.mathdu07.visualshop.listener.PlayerListener;
@@ -22,6 +25,7 @@ public class VisualShop extends JavaPlugin {
 	private Config config;
 	private Templates templates;
 	private Economy economy;
+	private ShopSaver shopSaver;
 	
 	private boolean debug = false;
 	
@@ -29,7 +33,11 @@ public class VisualShop extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		try {
+			shopSaver.save();
+		} catch (IOException e) {e.printStackTrace();}
 		
+		Shop.removeShops();
 	}
 
 	@Override
@@ -48,12 +56,14 @@ public class VisualShop extends JavaPlugin {
 			return;
 		}
 		
+		shopSaver = new ShopSaver(this);
+		
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
 	}
 	
 	@Override
-	public void onLoad() {
+	public void onLoad() {		
 		instance = this;
 		
 		playerListener = new PlayerListener();
@@ -61,8 +71,7 @@ public class VisualShop extends JavaPlugin {
 		
 		config = new Config(this);
 		templates = new Templates(this);
-		
-		debug = config.getBooleanProperty(Config.DEBUG);
+		debug = config.getBooleanProperty(Config.DEBUG);		
 	}
 	
 	public Economy getEconomy() {
@@ -105,6 +114,10 @@ public class VisualShop extends JavaPlugin {
 	public static void debug(String msg) {
 		if (instance.debug)
 			instance.getLogger().log(Level.INFO, "[DEBUG] " + msg);
+	}
+	
+	static {
+		ConfigurationSerialization.registerClass(Shop.class);
 	}
 
 }

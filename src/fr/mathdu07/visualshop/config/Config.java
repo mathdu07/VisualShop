@@ -27,4 +27,9 @@ public class Config extends YamlConfig {
 		//TODO Config
 	}
 
+	@Override
+	protected void saveProperties() {
+		
+	}
+
 }

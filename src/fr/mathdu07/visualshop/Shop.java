@@ -6,22 +6,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Iterator;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.inventory.ItemStack;
 
 public class Shop implements ConfigurationSerializable {
 	
 	private static final Set<Shop> shops = new HashSet<Shop>(); 
 	
-	private float pricePerUnit;
+	private double pricePerUnit;
 	private final ItemStack item;
 	private Location location;
 	
-	public Shop (float pricePerUnit, Material item, Location loc) {
+	public Shop (double pricePerUnit, Material item, Location loc) {
 		this.pricePerUnit = pricePerUnit;
 		this.item = new ItemStack(item);
 		this.location = loc;
@@ -30,7 +30,7 @@ public class Shop implements ConfigurationSerializable {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public Shop (float pricePerUnit, int itemID, Location loc) {
+	public Shop (double pricePerUnit, int itemID, Location loc) {
 		this.pricePerUnit = pricePerUnit;
 		this.item = new ItemStack(itemID);
 		this.location = loc;
@@ -38,7 +38,7 @@ public class Shop implements ConfigurationSerializable {
 		shops.add(this);
 	}
 	
-	public Shop (float pricePerUnit, ItemStack itemstack, Location loc) {
+	public Shop (double pricePerUnit, ItemStack itemstack, Location loc) {
 		this.pricePerUnit = pricePerUnit;
 		this.item = itemstack;
 		this.location = loc;
@@ -49,7 +49,7 @@ public class Shop implements ConfigurationSerializable {
 	/**
 	 * @return the pricePerUnit
 	 */
-	public float getPricePerUnit() {
+	public double getPricePerUnit() {
 		return pricePerUnit;
 	}
 
@@ -79,13 +79,19 @@ public class Shop implements ConfigurationSerializable {
 		
 		map.put("price", pricePerUnit);
 		map.put("item", item);
-		map.put("location", location);
+		map.put("world", location.getWorld().getName());
+		map.put("x", location.getBlockX());
+		map.put("y", location.getBlockY());
+		map.put("z", location.getBlockZ());
 		
 		return map;
 	}
 	
 	public static Shop deserialize(Map<String, Object> map) {
-		return new Shop((float) map.get("price"), (ItemStack) map.get("item"), (Location) map.get("location"));
+		World world = Bukkit.getWorld((String) map.get("world"));
+		
+		int x = (int) map.get("x"), y = (int) map.get("y"), z = (int) map.get("z");
+		return new Shop((double) map.get("price"), (ItemStack) map.get("item"), new Location(world, x, y, z));
 	}
 	
 	/**
@@ -117,8 +123,18 @@ public class Shop implements ConfigurationSerializable {
 		return getShopAt(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
 	
-	static {
-		 ConfigurationSerialization.registerClass(Shop.class);
+	/**
+	 * @return an iterator to the shops
+	 */
+	public static Iterator<Shop> getShops() {
+		return shops.iterator();
 	}
-
+	
+	/**
+	 * Clear the set of the shop
+	 * Used when the plugin is disabled
+	 */
+	public static void removeShops() {
+		shops.clear();
+	}
 }

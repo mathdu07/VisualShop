@@ -78,6 +78,12 @@ public abstract class YamlConfig {
 		
 		loadProperties();
 		
+		save();
+	}
+	
+	public void save() throws IOException {
+		saveProperties();
+		
 		config.save(file);
 	}
 	
@@ -91,6 +97,8 @@ public abstract class YamlConfig {
 	}
 	
 	protected abstract void loadProperties();
+	
+	protected abstract void saveProperties();
 	
 	public int getIntProperty (String key){
 		return intMap.get(key);

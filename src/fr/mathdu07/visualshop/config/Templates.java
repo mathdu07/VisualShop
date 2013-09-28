@@ -14,4 +14,9 @@ public class Templates extends YamlConfig {
 
 	}
 
+	@Override
+	protected void saveProperties() {
+		
+	}
+
 }
