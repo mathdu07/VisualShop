@@ -9,6 +9,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import fr.mathdu07.visualshop.command.VsCommandExecutor;
 import fr.mathdu07.visualshop.config.Config;
 import fr.mathdu07.visualshop.config.ShopSaver;
 import fr.mathdu07.visualshop.config.Templates;
@@ -22,6 +23,7 @@ public class VisualShop extends JavaPlugin {
 
 	private PlayerListener playerListener;
 	private EntityListener entityListener;
+	private VsCommandExecutor command;
 	private Config config;
 	private Templates templates;
 	private Economy economy;
@@ -38,6 +40,7 @@ public class VisualShop extends JavaPlugin {
 		} catch (IOException e) {e.printStackTrace();}
 		
 		Shop.removeShops();
+		ShopManager.resetPlayers();
 	}
 
 	@Override
@@ -56,10 +59,13 @@ public class VisualShop extends JavaPlugin {
 			return;
 		}
 		
-		shopSaver = new ShopSaver(this);
-		
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
+		
+		shopSaver = new ShopSaver(this);
+		
+		command = new VsCommandExecutor();
+		getServer().getPluginCommand("visualshop").setExecutor(command);
 	}
 	
 	@Override
@@ -85,6 +91,24 @@ public class VisualShop extends JavaPlugin {
         }
 
         return (economy != null);
+	}
+	
+	/**
+	 * 
+	 * @param array - list of string
+	 * @param key - string to find
+	 * @return whether the array contains the string given with ignore case
+	 */
+	public static boolean containsIgnoreCase(String[] array, String key){
+		if (array == null) return false;
+		
+		for (String str : array){
+			
+			if (str.equalsIgnoreCase(key))
+				return true;
+		}
+		
+		return false;
 	}
 	
 	public static Config getVSConfig() {

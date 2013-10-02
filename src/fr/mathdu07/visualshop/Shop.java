@@ -137,4 +137,10 @@ public class Shop implements ConfigurationSerializable {
 	public static void removeShops() {
 		shops.clear();
 	}
+	
+	@Override
+	public String toString() {
+		return "[item=" + item.getType() + ";price=" + pricePerUnit + 
+				";x=" + location.getBlockX() + ";y=" + location.getBlockY() + ";z=" + location.getBlockZ() + "]";
+	}
 }

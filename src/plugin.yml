@@ -4,3 +4,7 @@ name: VisualShop
 description: A basic plugin to sell items as administrator
 author: mathdu07
 depend: [Vault]
+commands:
+  visualshop:
+    description: Main command for the VisualShop plugin
+    aliases: [vs]
