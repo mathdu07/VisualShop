@@ -61,10 +61,10 @@ public class Shop implements ConfigurationSerializable {
 	}
 
 	/**
-	 * @return the item
+	 * @return a clone of the itemstack
 	 */
 	public ItemStack getItem() {
-		return item;
+		return item.clone();
 	}
 
 	/**
@@ -121,6 +121,25 @@ public class Shop implements ConfigurationSerializable {
 	 */
 	public static Shop getShopAt(Location loc) {
 		return getShopAt(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+	}
+	
+	/**
+	 * @param loc
+	 * @return if there is a shop at the given location or not
+	 */
+	public static boolean hasShopAt(Location loc) {
+		return getShopAt(loc) != null;
+	}
+	
+	/**
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return if there is a shop at the given location or not
+	 */
+	public static boolean hasShopAt(World world, int x, int y, int z) {
+		return getShopAt(world, x, y, z) != null;
 	}
 	
 	/**
