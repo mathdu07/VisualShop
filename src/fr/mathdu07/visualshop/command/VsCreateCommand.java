@@ -34,8 +34,16 @@ public class VsCreateCommand extends VsSubCommand {
 						 is = new ItemStack(id, 1, (short) metadata);
 					 } else
 						 is = new ItemStack(Integer.parseInt(args[1]), 1);
-				} else 
-					is = new ItemStack(Material.getMaterial(args[1]));
+				} else {
+					Material material = Material.getMaterial(args[1].toUpperCase());
+					
+					if (material != null)
+						is = new ItemStack(material);
+					else {
+						sender.sendMessage(ChatColor.RED + "Item inconnu : " + ChatColor.ITALIC + args[1]); //TEMPLATE
+						return;
+					}
+				}
 				
 			} else {
 				is = player.getItemInHand();
