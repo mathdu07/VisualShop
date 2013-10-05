@@ -6,6 +6,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.ShopManager;
@@ -31,14 +33,16 @@ public class PlayerListener implements Listener {
 			
 			if (ShopManager.willPlayerCreateShop(p)) {
 				
-				if (Shop.getShopAt(b.getLocation()) == null) {
+				if (Shop.getShopAt(b.getLocation()) == null && b.getWorld().getBlockAt(b.getLocation().add(new Vector(0, 1, 0))).getType().equals(Material.AIR)) {
 					Shop shop = new Shop(ShopManager.getPriceAssignedByPlayer(p), ShopManager.getISAssignedByPlayer(p), b.getLocation());
 					p.sendMessage(ChatColor.GREEN + "Commerce crée avec succès");
 					ShopManager.removePlayer(p);
 					
 					//TODO Add option disable creation of shop log in the config
 					VisualShop.info("Shop created :" + shop);
-				} else 
+				} else if (!b.getWorld().getBlockAt(b.getLocation().add(new Vector(0, 1, 0))).getType().equals(Material.AIR))
+					p.sendMessage(ChatColor.RED + "Le bloc d'au dessus doit être de l'air"); //TEMPLATE
+				else 
 					p.sendMessage(ChatColor.RED + "Il y a déjà un commerce ici !"); //TEMPLATE
 				e.setCancelled(true);
 			} else if (Shop.getShopAt(b.getLocation()) != null) {
