@@ -13,6 +13,7 @@ import fr.mathdu07.visualshop.command.VsCommandExecutor;
 import fr.mathdu07.visualshop.config.Config;
 import fr.mathdu07.visualshop.config.ShopSaver;
 import fr.mathdu07.visualshop.config.Templates;
+import fr.mathdu07.visualshop.listener.BlockListener;
 import fr.mathdu07.visualshop.listener.EntityListener;
 import fr.mathdu07.visualshop.listener.PlayerListener;
 
@@ -23,6 +24,7 @@ public class VisualShop extends JavaPlugin {
 
 	private PlayerListener playerListener;
 	private EntityListener entityListener;
+	private BlockListener blockListener;
 	private VsCommandExecutor command;
 	private Config config;
 	private Templates templates;
@@ -61,6 +63,7 @@ public class VisualShop extends JavaPlugin {
 		
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
+		getServer().getPluginManager().registerEvents(blockListener, this);
 		
 		shopSaver = new ShopSaver(this);
 		
@@ -74,6 +77,7 @@ public class VisualShop extends JavaPlugin {
 		
 		playerListener = new PlayerListener();
 		entityListener = new EntityListener();
+		blockListener = new BlockListener();
 		
 		config = new Config(this);
 		templates = new Templates(this);
