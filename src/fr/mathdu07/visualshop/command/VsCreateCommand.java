@@ -46,7 +46,7 @@ public class VsCreateCommand extends VsSubCommand {
 				}
 				
 			} else {
-				is = player.getItemInHand();
+				is = player.getItemInHand().clone();
 				is.setAmount(1);
 			}
 			
