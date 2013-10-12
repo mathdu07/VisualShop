@@ -76,14 +76,18 @@ public class PlayerListener implements Listener {
 					}
 					
 					EconomyResponse resp = eco.withdrawPlayer(p.getName(), shop.getPricePerUnit() * 1);
-					if (resp.transactionSuccess())
+					if (resp.transactionSuccess()) {
 						p.sendMessage(ChatColor.GREEN + "Achat de 1 " + ChatColor.AQUA + shop.getItem().getType() + ChatColor.GREEN + " réussi"); //TEMPLATE
+						p.updateInventory();
+						//TODO Update inventory
+					}
 					else {
 						p.getInventory().remove(is);
 						p.sendMessage(ChatColor.RED + "Erreur lors de l'achat : " + resp.errorMessage); //TEMPLATE
 					}
 				} else
 					p.sendMessage(ChatColor.RED + "Vous n'avez pas assez d'argent (" + shop.getPricePerUnit() * 1 + ")."); //TEMPLATE
+				e.setCancelled(true);
 			}
 		}
 	}
