@@ -8,11 +8,13 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -79,7 +81,6 @@ public class PlayerListener implements Listener {
 					if (resp.transactionSuccess()) {
 						p.sendMessage(ChatColor.GREEN + "Achat de 1 " + ChatColor.AQUA + shop.getItem().getType() + ChatColor.GREEN + " réussi"); //TEMPLATE
 						p.updateInventory();
-						//TODO Update inventory
 					}
 					else {
 						p.getInventory().remove(is);
@@ -89,6 +90,18 @@ public class PlayerListener implements Listener {
 					p.sendMessage(ChatColor.RED + "Vous n'avez pas assez d'argent (" + shop.getPricePerUnit() * 1 + ")."); //TEMPLATE
 				e.setCancelled(true);
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerPickupItem(PlayerPickupItemEvent e) {
+		if (e == null)	return;
+		
+		final Item i = e.getItem();
+		
+		if (Shop.isItemOwnedToAShop(i)) {
+			e.setCancelled(true);
+			i.setPickupDelay(2000);
 		}
 	}
 

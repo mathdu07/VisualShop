@@ -1,11 +1,15 @@
 package fr.mathdu07.visualshop;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Item;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,6 +41,12 @@ public class VisualShop extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		Iterator<Shop> it = Shop.getShops();
+		while (it.hasNext()) {
+			Shop s = it.next();
+			s.despawnItem();
+		}
+		
 		try {
 			shopSaver.save();
 		} catch (IOException e) {e.printStackTrace();}
@@ -142,6 +152,21 @@ public class VisualShop extends JavaPlugin {
 	public static void debug(String msg) {
 		if (instance.debug)
 			instance.getLogger().log(Level.INFO, "[DEBUG] " + msg);
+	}
+	
+	/**
+	 * @param world - the world where find the item entity
+	 * @param uid - the unique uid of the item entity
+	 * @return the item entity or null if not found
+	 */
+	public static Item getItemEntityByUID(World world, UUID uid){
+		
+		for (Item i : world.getEntitiesByClass(Item.class)) {
+			if (i.getUniqueId() == uid)
+				return i;
+		}
+		
+		return null;
 	}
 	
 	static {

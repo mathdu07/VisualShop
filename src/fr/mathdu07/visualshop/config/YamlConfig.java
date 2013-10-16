@@ -77,7 +77,7 @@ public abstract class YamlConfig {
 			config.load(file);
 		
 		loadProperties();
-		
+		VisualShop.debug("Saving config ...");
 		save();
 	}
 	

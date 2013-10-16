@@ -1,18 +1,22 @@
 package fr.mathdu07.visualshop;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Iterator;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
-
+//TODO Make the item entity stay at its coordinates
 public class Shop implements ConfigurationSerializable {
 	
 	private static final Set<Shop> shops = new HashSet<Shop>(); 
@@ -20,12 +24,14 @@ public class Shop implements ConfigurationSerializable {
 	private double pricePerUnit;
 	private final ItemStack item;
 	private Location location;
+	private Item itemEntity;
 	
 	public Shop (double pricePerUnit, Material item, Location loc) {
 		this.pricePerUnit = pricePerUnit;
 		this.item = new ItemStack(item);
 		this.location = loc;
 		
+		spawnItem();
 		shops.add(this);
 	}
 	
@@ -35,6 +41,7 @@ public class Shop implements ConfigurationSerializable {
 		this.item = new ItemStack(itemID);
 		this.location = loc;
 		
+		spawnItem();
 		shops.add(this);
 	}
 	
@@ -43,7 +50,32 @@ public class Shop implements ConfigurationSerializable {
 		this.item = itemstack;
 		this.location = loc;
 		
+		spawnItem();
 		shops.add(this);
+	}
+	
+	/**
+	 * Spawn the entity item that stands for the shop
+	 * @return if the item has spawned, false if there was already an item entity
+	 */
+	protected boolean spawnItem() {
+		if (itemEntity != null)
+			return false;
+		
+		itemEntity = location.getWorld().dropItem(location.clone().add(0.5, 1.2, 0.5), item);
+		return true;
+	}
+	
+	/**
+	 * Despawn the entity item that standed for the shop
+	 * @return if the item has been removed, false if there was not
+	 */
+	protected boolean despawnItem() {
+		if (itemEntity == null)
+			return false;
+		
+		itemEntity.remove();
+		return true;
 	}
 
 	/**
@@ -65,6 +97,13 @@ public class Shop implements ConfigurationSerializable {
 	 */
 	public ItemStack getItem() {
 		return item.clone();
+	}
+	
+	/**
+	 * @return the item entity associated to the shop
+	 */
+	public Item getItemEntity() {
+		return itemEntity;
 	}
 
 	/**
@@ -91,6 +130,7 @@ public class Shop implements ConfigurationSerializable {
 		World world = Bukkit.getWorld((String) map.get("world"));
 		
 		int x = (int) map.get("x"), y = (int) map.get("y"), z = (int) map.get("z");
+		
 		return new Shop((double) map.get("price"), (ItemStack) map.get("item"), new Location(world, x, y, z));
 	}
 	
@@ -155,6 +195,41 @@ public class Shop implements ConfigurationSerializable {
 	 */
 	public static void removeShops() {
 		shops.clear();
+	}
+	
+	/**
+	 * @return whether the given item entity is owned to a shop
+	 */
+	public static boolean isItemOwnedToAShop(Item i) {
+		for (Shop s : shops) {
+			if (s.getItemEntity() == null)
+				continue;
+			
+			if (s.getItemEntity().getUniqueId().equals(i.getUniqueId()))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * @param chunk - the chucks were seek shops
+	 * @return all the shops in the given chunk
+	 */
+	public static Shop[] getShopsAt(Chunk chunk) {
+		Iterator<Shop> it = shops.iterator();
+		List<Shop> array = new ArrayList<Shop>();
+		
+		while (it.hasNext()) {
+			Shop s = it.next();
+			
+			if (chunk.getWorld().equals(s.getLocation().getWorld())
+				&& Math.floor(s.getLocation().getBlockX() / 16d) == chunk.getX()
+				&& Math.floor(s.getLocation().getBlockZ() / 16d) == chunk.getZ())
+				array.add(s);
+		}
+		
+		return array.toArray(new Shop[array.size()]);
 	}
 	
 	@Override

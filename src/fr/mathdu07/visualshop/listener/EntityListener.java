@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
 
 import fr.mathdu07.visualshop.Shop;
 
@@ -36,6 +37,14 @@ public class EntityListener implements Listener {
 				return;
 			}
 		}
+	}
+	
+	@EventHandler
+	public void onItemDespawn (ItemDespawnEvent e) {
+		if (e == null)	return;
+		
+		if (Shop.isItemOwnedToAShop(e.getEntity()))
+			e.setCancelled(true);
 	}
 
 }
