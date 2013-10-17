@@ -16,7 +16,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
-//TODO Make the item entity stay at its coordinates
+
 public class Shop implements ConfigurationSerializable {
 	
 	private static final Set<Shop> shops = new HashSet<Shop>(); 
@@ -76,6 +76,13 @@ public class Shop implements ConfigurationSerializable {
 		
 		itemEntity.remove();
 		return true;
+	}
+	
+	/**
+	 * Update the shop by teleporting the item entity to its coordinates
+	 */
+	public void update() {
+		itemEntity.teleport(location.clone().add(0.5, 1.2, 0.5));
 	}
 
 	/**

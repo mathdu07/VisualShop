@@ -12,6 +12,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Item;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import fr.mathdu07.visualshop.command.VsCommandExecutor;
 import fr.mathdu07.visualshop.config.Config;
@@ -36,6 +37,7 @@ public class VisualShop extends JavaPlugin {
 	private ShopSaver shopSaver;
 	
 	private boolean debug = false;
+	private BukkitTask task;
 	
 	private static VisualShop instance;
 
@@ -53,6 +55,8 @@ public class VisualShop extends JavaPlugin {
 		
 		Shop.removeShops();
 		ShopManager.resetPlayers();
+		
+		task.cancel();
 	}
 
 	@Override
@@ -79,6 +83,8 @@ public class VisualShop extends JavaPlugin {
 		
 		command = new VsCommandExecutor();
 		getServer().getPluginCommand("visualshop").setExecutor(command);
+		
+		task = getServer().getScheduler().runTaskTimer(this, new ShopTask(), 120l, 1200l); //TODO Config the time between each update
 	}
 	
 	@Override
