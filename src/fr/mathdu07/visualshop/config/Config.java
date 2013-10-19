@@ -21,6 +21,13 @@ public class Config extends YamlConfig {
 	 * Int property
 	 */
 	public static final String UPDATE_DELTA = "update-time";
+	
+	/**
+	 * Should the plugin protects shops from entities ?
+	 * Like explosions, enderman pickup ...
+	 * Boolean property
+	 */
+	public static final String PROTECT_SHOPS = "protect-shops";
 
 	public Config(VisualShop plugin) {
 		super(plugin, "config.yml");
@@ -31,6 +38,7 @@ public class Config extends YamlConfig {
 		booleanMap.put(ENABLED, config.getBoolean(ENABLED));
 		booleanMap.put(DEBUG, config.getBoolean(DEBUG));
 		intMap.put(UPDATE_DELTA, config.getInt(UPDATE_DELTA));
+		booleanMap.put(PROTECT_SHOPS, config.getBoolean(PROTECT_SHOPS));
 	}
 
 	@Override
