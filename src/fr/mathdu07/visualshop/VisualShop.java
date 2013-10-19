@@ -84,7 +84,7 @@ public class VisualShop extends JavaPlugin {
 		command = new VsCommandExecutor();
 		getServer().getPluginCommand("visualshop").setExecutor(command);
 		
-		task = getServer().getScheduler().runTaskTimer(this, new ShopTask(), 20l, 1200l); //TODO Config the time between each update
+		task = getServer().getScheduler().runTaskTimer(this, new ShopTask(), 20l, config.getIntProperty(Config.UPDATE_DELTA) * 20l);
 	}
 	
 	@Override

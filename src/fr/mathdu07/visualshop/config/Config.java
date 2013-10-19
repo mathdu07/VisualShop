@@ -14,6 +14,13 @@ public class Config extends YamlConfig {
 	 * Boolean property
 	 */
 	public static final String DEBUG = "debug";
+	
+	/**
+	 * How long should you wait between two updates
+	 * in seconds
+	 * Int property
+	 */
+	public static final String UPDATE_DELTA = "update-time";
 
 	public Config(VisualShop plugin) {
 		super(plugin, "config.yml");
@@ -21,10 +28,9 @@ public class Config extends YamlConfig {
 
 	@Override
 	protected void loadProperties() {
-		booleanMap.put(ENABLED, config.getBoolean("enabled"));
-		booleanMap.put(DEBUG, config.getBoolean("debug"));
-		
-		//TODO Config
+		booleanMap.put(ENABLED, config.getBoolean(ENABLED));
+		booleanMap.put(DEBUG, config.getBoolean(DEBUG));
+		intMap.put(UPDATE_DELTA, config.getInt(UPDATE_DELTA));
 	}
 
 	@Override
