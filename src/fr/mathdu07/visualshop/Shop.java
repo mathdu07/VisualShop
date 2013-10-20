@@ -18,6 +18,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.config.Config;
+import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
 
 public class Shop implements ConfigurationSerializable {
 	
@@ -28,16 +29,19 @@ public class Shop implements ConfigurationSerializable {
 	private Location location;
 	private Item itemEntity;
 	
-	public Shop (double pricePerUnit, Material item, Location loc) {
+	public Shop (double pricePerUnit, Material item, Location loc) throws VsNegativeOrNullValueException {
 		this(pricePerUnit, new ItemStack(item), loc);
 	}
 	
 	@SuppressWarnings("deprecation")
-	public Shop (double pricePerUnit, int itemID, Location loc) {
+	public Shop (double pricePerUnit, int itemID, Location loc) throws VsNegativeOrNullValueException {
 		this(pricePerUnit, new ItemStack(itemID), loc);
 	}
 	
-	public Shop (double pricePerUnit, ItemStack itemstack, Location loc) {
+	public Shop (double pricePerUnit, ItemStack itemstack, Location loc) throws VsNegativeOrNullValueException {
+		if (pricePerUnit <= 0)
+			throw new VsNegativeOrNullValueException();
+		
 		this.pricePerUnit = pricePerUnit;
 		this.item = itemstack;
 		this.location = loc;
@@ -142,7 +146,12 @@ public class Shop implements ConfigurationSerializable {
 		
 		int x = (int) map.get("x"), y = (int) map.get("y"), z = (int) map.get("z");
 		
-		return new Shop((double) map.get("price"), (ItemStack) map.get("item"), new Location(world, x, y, z));
+		try {
+			return new Shop((double) map.get("price"), (ItemStack) map.get("item"), new Location(world, x, y, z));
+		} catch (VsNegativeOrNullValueException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**

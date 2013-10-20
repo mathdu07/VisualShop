@@ -9,6 +9,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 import fr.mathdu07.visualshop.VsPlayer;
+import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
 
 public class VsCreateCommand extends VsSubCommand {
 
@@ -55,8 +56,13 @@ public class VsCreateCommand extends VsSubCommand {
 				return;
 			}
 			
-			sender.sendMessage("Click gauche sur un bloc pour créer le commerce");
-			VsPlayer.getPlayer(player).assignShopCreation(is, price);
+			
+			try {
+				VsPlayer.getPlayer(player).assignShopCreation(is, price);
+				sender.sendMessage("Click gauche sur un bloc pour créer le commerce");
+			} catch (VsNegativeOrNullValueException e) {
+				sender.sendMessage(ChatColor.RED + "Le prix ne peut ni être égal à 0, ni négatif"); //TEMPLATE
+			}
 			
 			
 		} catch (NumberFormatException e) {

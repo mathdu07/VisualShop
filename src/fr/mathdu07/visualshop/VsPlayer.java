@@ -7,6 +7,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
+
 public class VsPlayer {
 	
 	private static Map<String, VsPlayer> players = new HashMap<>();
@@ -41,8 +43,12 @@ public class VsPlayer {
 	 * Assign a shop to the player 
 	 * @param is - shop's itemstack
 	 * @param price - shop's price
+	 * @throws VsNegativeOrNullValueException if the price is smaller or equal to 0
 	 */
-	public void assignShopCreation(ItemStack is, double price) {
+	public void assignShopCreation(ItemStack is, double price) throws VsNegativeOrNullValueException {
+		if (price <= 0)
+			throw new VsNegativeOrNullValueException();
+		
 		this.createShopIS = is;
 		this.createShopPrice = price;
 	}
@@ -59,8 +65,13 @@ public class VsPlayer {
 	 * @return the shop that the player create
 	 */
 	public Shop createShop(Block b) {
-		Shop s = new Shop(createShopPrice, createShopIS, b.getLocation());
-		assignShopCreation(null, 0);
+		Shop s = null;
+		
+		try {
+			s = new Shop(createShopPrice, createShopIS, b.getLocation());
+			this.createShopIS = null;
+			this.createShopPrice = 0.d;
+		} catch (VsNegativeOrNullValueException e) {e.printStackTrace();}
 		
 		return s;
 	}

@@ -58,6 +58,8 @@ public class PlayerListener implements Listener {
 				} else
 					p.sendMessage(ChatColor.RED + "Il n'y a pas de commerce ici"); //TEMPLATE
 				
+				e.setCancelled(true);
+				
 			} else if (Shop.getShopAt(b.getLocation()) != null) {
 				Shop shop = Shop.getShopAt(b.getLocation());
 				//TEMPLATE (s)
