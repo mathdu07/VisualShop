@@ -32,6 +32,7 @@ public class Shop implements ConfigurationSerializable {
 		this.location = loc;
 		
 		spawnItem();
+		updateItemPositionLater();
 		shops.add(this);
 	}
 	
@@ -42,6 +43,7 @@ public class Shop implements ConfigurationSerializable {
 		this.location = loc;
 		
 		spawnItem();
+		updateItemPositionLater();
 		shops.add(this);
 	}
 	
@@ -51,7 +53,19 @@ public class Shop implements ConfigurationSerializable {
 		this.location = loc;
 		
 		spawnItem();
+		updateItemPositionLater();
 		shops.add(this);
+	}
+	
+	private void updateItemPositionLater() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(VisualShop.getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
+				update();
+			}
+			
+		}, 20);
 	}
 	
 	/**
@@ -194,6 +208,27 @@ public class Shop implements ConfigurationSerializable {
 	 */
 	public static Iterator<Shop> getShops() {
 		return shops.iterator();
+	}
+	
+	/**
+	 * Deletes the shop
+	 * @param location - the location of the shop
+	 * @return if the shop has been deleted
+	 */
+	public static boolean deleteShop(Location loc) {
+		Iterator<Shop> it = shops.iterator();
+		
+		while (it.hasNext()) {
+			Shop s = it.next();
+			
+			if (s.getLocation().equals(loc)) {
+				s.itemEntity.remove();
+				shops.remove(s);
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**

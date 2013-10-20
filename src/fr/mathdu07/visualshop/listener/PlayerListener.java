@@ -19,8 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import fr.mathdu07.visualshop.Shop;
-import fr.mathdu07.visualshop.ShopManager;
 import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.VsPlayer;
 
 public class PlayerListener implements Listener {
 	
@@ -29,16 +29,16 @@ public class PlayerListener implements Listener {
 		if (e == null) return;
 		
 		Player p = e.getPlayer();
+		VsPlayer vp = VsPlayer.getPlayer(p);
 		
 		if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 			Block b = e.getClickedBlock();
 			
-			if (ShopManager.willPlayerCreateShop(p)) {
+			if (vp.shouldCreateShop()) {
 				
 				if (Shop.getShopAt(b.getLocation()) == null && b.getWorld().getBlockAt(b.getLocation().add(new Vector(0, 1, 0))).getType().equals(Material.AIR)) {
-					Shop shop = new Shop(ShopManager.getPriceAssignedByPlayer(p), ShopManager.getISAssignedByPlayer(p), b.getLocation());
+					Shop shop = vp.createShop(b);
 					p.sendMessage(ChatColor.GREEN + "Commerce crée avec succès");
-					ShopManager.removePlayer(p);
 					
 					//TODO Add option disable creation of shop log in the config
 					VisualShop.info("Shop created :" + shop);
@@ -47,6 +47,16 @@ public class PlayerListener implements Listener {
 				else 
 					p.sendMessage(ChatColor.RED + "Il y a déjà un commerce ici !"); //TEMPLATE
 				e.setCancelled(true);
+			} else if (vp.shouldDeleteShop()) {
+				
+				if (Shop.hasShopAt(b.getLocation())) {
+					Shop.deleteShop(b.getLocation());
+					p.sendMessage(ChatColor.GREEN + "Shop deleted !"); //TEMPLATE
+					vp.setWouldDeleteShop(false);
+					
+				} else
+					p.sendMessage(ChatColor.RED + "Il n'y a pas de commerce ici"); //TEMPLATE
+				
 			} else if (Shop.getShopAt(b.getLocation()) != null) {
 				Shop shop = Shop.getShopAt(b.getLocation());
 				//TEMPLATE (s)

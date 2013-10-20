@@ -7,4 +7,4 @@ depend: [Vault]
 commands:
   visualshop:
     description: Main command for the VisualShop plugin
-    aliases: [vs]
+    aliases: [vs, shop]

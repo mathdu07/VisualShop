@@ -54,7 +54,6 @@ public class VisualShop extends JavaPlugin {
 		} catch (IOException e) {e.printStackTrace();}
 		
 		Shop.removeShops();
-		ShopManager.resetPlayers();
 		
 		task.cancel();
 	}

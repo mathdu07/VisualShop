@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import fr.mathdu07.visualshop.ShopManager;
+import fr.mathdu07.visualshop.VsPlayer;
 
 public class VsCreateCommand extends VsSubCommand {
 
@@ -56,7 +56,7 @@ public class VsCreateCommand extends VsSubCommand {
 			}
 			
 			sender.sendMessage("Click gauche sur un bloc pour créer le commerce");
-			ShopManager.assignPlayerShop(player, is, price);
+			VsPlayer.getPlayer(player).assignShopCreation(is, price);
 			
 			
 		} catch (NumberFormatException e) {
