@@ -17,6 +17,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
+import fr.mathdu07.visualshop.config.Config;
+
 public class Shop implements ConfigurationSerializable {
 	
 	private static final Set<Shop> shops = new HashSet<Shop>(); 
@@ -27,24 +29,12 @@ public class Shop implements ConfigurationSerializable {
 	private Item itemEntity;
 	
 	public Shop (double pricePerUnit, Material item, Location loc) {
-		this.pricePerUnit = pricePerUnit;
-		this.item = new ItemStack(item);
-		this.location = loc;
-		
-		spawnItem();
-		updateItemPositionLater();
-		shops.add(this);
+		this(pricePerUnit, new ItemStack(item), loc);
 	}
 	
 	@SuppressWarnings("deprecation")
 	public Shop (double pricePerUnit, int itemID, Location loc) {
-		this.pricePerUnit = pricePerUnit;
-		this.item = new ItemStack(itemID);
-		this.location = loc;
-		
-		spawnItem();
-		updateItemPositionLater();
-		shops.add(this);
+		this(pricePerUnit, new ItemStack(itemID), loc);
 	}
 	
 	public Shop (double pricePerUnit, ItemStack itemstack, Location loc) {
@@ -224,6 +214,10 @@ public class Shop implements ConfigurationSerializable {
 			if (s.getLocation().equals(loc)) {
 				s.itemEntity.remove();
 				shops.remove(s);
+				
+				if (VisualShop.getVSConfig().getBooleanProperty(Config.LOG_SHOP_CREATION))
+					VisualShop.info("Shop deleted : " + s);
+				
 				return true;
 			}
 		}

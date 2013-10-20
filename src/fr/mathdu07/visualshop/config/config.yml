@@ -10,3 +10,6 @@ update-time: 60
 
 #Protect shops from explosions ans entities
 protect-shops: true
+
+#Log to the console when a shop is create or deleted
+log-shop-creation: true

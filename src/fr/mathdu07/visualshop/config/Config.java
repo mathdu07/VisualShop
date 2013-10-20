@@ -28,6 +28,12 @@ public class Config extends YamlConfig {
 	 * Boolean property
 	 */
 	public static final String PROTECT_SHOPS = "protect-shops";
+	
+	/**
+	 * Should the plugin log when a shop is created/deleted
+	 * Boolean property 
+	 */
+	public static final String LOG_SHOP_CREATION = "log-shop-creation";
 
 	public Config(VisualShop plugin) {
 		super(plugin, "config.yml");
@@ -39,6 +45,7 @@ public class Config extends YamlConfig {
 		booleanMap.put(DEBUG, config.getBoolean(DEBUG));
 		intMap.put(UPDATE_DELTA, config.getInt(UPDATE_DELTA));
 		booleanMap.put(PROTECT_SHOPS, config.getBoolean(PROTECT_SHOPS));
+		booleanMap.put(LOG_SHOP_CREATION, config.getBoolean(LOG_SHOP_CREATION));
 	}
 
 	@Override
