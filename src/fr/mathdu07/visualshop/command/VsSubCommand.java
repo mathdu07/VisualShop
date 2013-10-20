@@ -34,6 +34,18 @@ public abstract class VsSubCommand {
 		
 	}
 	
+	protected String getCommandAndAliases(VsSubCommand cmd) {
+		String str = cmd.getName();
+		
+		if (cmd.getAliases() == null)
+			return str;
+		
+		for (String alias : cmd.getAliases())
+			str += ", " + alias;
+		
+		return str;
+	}
+	
 	/**
 	 * Execute the command
 	 * @param sender - the sender (console, player ...) that has performed the command
@@ -49,7 +61,9 @@ public abstract class VsSubCommand {
 	/**
 	 * @return the usage of the sub command, displayed on help
 	 */
-	public abstract String getUsage();
+	public String getUsage() {
+		return "/visualshop <" + getCommandAndAliases(this) + ">";  
+	}
 	/**
 	 * @return description of the command, displayed on help
 	 */

@@ -71,12 +71,12 @@ public class VsCreateCommand extends VsSubCommand {
 
 	@Override
 	public String getUsage() {
-		return "/visualshop create <price> {item/this}";
+		return super.getUsage() + " <price> {item/this}";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Creer un commerce visuel"; // TEMPLATE
+		return "Créer un commerce"; // TEMPLATE
 	}
 
 	@Override

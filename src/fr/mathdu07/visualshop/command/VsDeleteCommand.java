@@ -28,13 +28,8 @@ public class VsDeleteCommand extends VsSubCommand {
 	}
 
 	@Override
-	public String getUsage() {
-		return "/visualshop delete";
-	}
-
-	@Override
 	public String getDescription() {
-		return "Supprimer un commerce visuel"; // TEMPLATE
+		return "Supprimer un commerce"; // TEMPLATE
 	}
 
 	@Override
