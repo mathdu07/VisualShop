@@ -42,7 +42,7 @@ public class PlayerListener implements Listener {
 					p.sendMessage(ChatColor.GREEN + "Commerce crée avec succès");
 					
 					if (VisualShop.getVSConfig().getBooleanProperty(Config.LOG_SHOP_CREATION))
-						VisualShop.info("Shop created : " + toString());
+						VisualShop.info("Shop created : " + shop);
 				} else if (!b.getWorld().getBlockAt(b.getLocation().add(new Vector(0, 1, 0))).getType().equals(Material.AIR))
 					p.sendMessage(ChatColor.RED + "Le bloc d'au dessus doit être de l'air"); //TEMPLATE
 				else 

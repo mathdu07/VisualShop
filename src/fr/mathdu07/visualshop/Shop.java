@@ -90,7 +90,11 @@ public class Shop implements ConfigurationSerializable {
 	 * Update the shop by teleporting the item entity to its coordinates
 	 */
 	public void update() {
-		itemEntity.teleport(location.clone().add(0.5, 1.2, 0.5));
+		
+		if (itemEntity != null)
+			itemEntity.teleport(location.clone().add(0.5, 1.2, 0.5));
+		else
+			spawnItem();
 	}
 
 	/**
