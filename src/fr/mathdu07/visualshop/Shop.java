@@ -17,7 +17,6 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
-import fr.mathdu07.visualshop.config.Config;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
 
 public class Shop implements ConfigurationSerializable {
@@ -228,7 +227,7 @@ public class Shop implements ConfigurationSerializable {
 				s.itemEntity.remove();
 				shops.remove(s);
 				
-				if (VisualShop.getVSConfig().getBooleanProperty(Config.LOG_SHOP_CREATION))
+				if (VisualShop.getVSConfig().LOG_SHOP_CREATION.value)
 					VisualShop.info("Shop deleted : " + s);
 				
 				return true;

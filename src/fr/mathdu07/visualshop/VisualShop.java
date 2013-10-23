@@ -61,7 +61,7 @@ public class VisualShop extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		
-		if (!config.getBooleanProperty(Config.ENABLED)) {
+		if (!config.ENABLED.value) {
 			warn("Disabling the plugin, specified by the config");
 			this.setEnabled(false);
 			return;
@@ -83,7 +83,7 @@ public class VisualShop extends JavaPlugin {
 		command = new VsCommandExecutor();
 		getServer().getPluginCommand("visualshop").setExecutor(command);
 		
-		task = getServer().getScheduler().runTaskTimer(this, new ShopTask(), 20l, config.getIntProperty(Config.UPDATE_DELTA) * 20l);
+		task = getServer().getScheduler().runTaskTimer(this, new ShopTask(), 20l, config.UPDATE_DELTA.value * 20l);
 	}
 	
 	@Override
@@ -96,7 +96,7 @@ public class VisualShop extends JavaPlugin {
 		
 		config = new Config(this);
 		templates = new Templates(this);
-		debug = config.getBooleanProperty(Config.DEBUG);		
+		debug = config.DEBUG.value;		
 	}
 	
 	public Economy getEconomy() {

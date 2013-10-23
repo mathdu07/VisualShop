@@ -11,7 +11,6 @@ import org.bukkit.event.entity.ItemDespawnEvent;
 
 import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
-import fr.mathdu07.visualshop.config.Config;
 
 public class EntityListener implements Listener {
 	
@@ -21,7 +20,7 @@ public class EntityListener implements Listener {
 		
 		Block b = e.getBlock();
 		
-		if (Shop.hasShopAt(b.getLocation()) && VisualShop.getVSConfig().getBooleanProperty(Config.PROTECT_SHOPS))
+		if (Shop.hasShopAt(b.getLocation()) && VisualShop.getVSConfig().PROTECT_SHOPS.value)
 			e.setCancelled(true);
 		
 	}
@@ -30,7 +29,7 @@ public class EntityListener implements Listener {
 	public void onEntityExplode (EntityExplodeEvent e) {
 		if (e == null)	return;
 		
-		if (VisualShop.getVSConfig().getBooleanProperty(Config.PROTECT_SHOPS)) {
+		if (VisualShop.getVSConfig().PROTECT_SHOPS.value) {
 			
 			List<Block> blocks = e.blockList();
 			for (int i = 0; i < blocks.size(); i++) {

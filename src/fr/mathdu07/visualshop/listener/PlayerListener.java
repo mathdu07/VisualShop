@@ -21,7 +21,6 @@ import org.bukkit.util.Vector;
 import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsPlayer;
-import fr.mathdu07.visualshop.config.Config;
 
 public class PlayerListener implements Listener {
 	
@@ -41,7 +40,7 @@ public class PlayerListener implements Listener {
 					Shop shop = vp.createShop(b);
 					p.sendMessage(ChatColor.GREEN + "Commerce crée avec succès");
 					
-					if (VisualShop.getVSConfig().getBooleanProperty(Config.LOG_SHOP_CREATION))
+					if (VisualShop.getVSConfig().LOG_SHOP_CREATION.value)
 						VisualShop.info("Shop created : " + shop);
 				} else if (!b.getWorld().getBlockAt(b.getLocation().add(new Vector(0, 1, 0))).getType().equals(Material.AIR))
 					p.sendMessage(ChatColor.RED + "Le bloc d'au dessus doit être de l'air"); //TEMPLATE

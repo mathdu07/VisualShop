@@ -8,49 +8,43 @@ public class Config extends YamlConfig {
 	 * Should the plugin be enabled or not ?
 	 * Boolean property
 	 */
-	public static final String ENABLED = "enabled";
+	public final Property<Boolean> ENABLED;
 	/**
 	 * Is the plugin in debug ?
 	 * Boolean property
 	 */
-	public static final String DEBUG = "debug";
+	public final Property<Boolean> DEBUG;
 	
 	/**
 	 * How long should you wait between two updates
 	 * in seconds
 	 * Int property
 	 */
-	public static final String UPDATE_DELTA = "update-time";
+	public final Property<Integer> UPDATE_DELTA;
 	
 	/**
 	 * Should the plugin protects shops from entities ?
 	 * Like explosions, enderman pickup ...
 	 * Boolean property
 	 */
-	public static final String PROTECT_SHOPS = "protect-shops";
+	public final Property<Boolean> PROTECT_SHOPS;
 	
 	/**
 	 * Should the plugin log when a shop is created/deleted
 	 * Boolean property 
 	 */
-	public static final String LOG_SHOP_CREATION = "log-shop-creation";
+	public final Property<Boolean> LOG_SHOP_CREATION;
 
 	public Config(VisualShop plugin) {
-		super(plugin, "config.yml");
-	}
-
-	@Override
-	protected void loadProperties() {
-		booleanMap.put(ENABLED, config.getBoolean(ENABLED));
-		booleanMap.put(DEBUG, config.getBoolean(DEBUG));
-		intMap.put(UPDATE_DELTA, config.getInt(UPDATE_DELTA));
-		booleanMap.put(PROTECT_SHOPS, config.getBoolean(PROTECT_SHOPS));
-		booleanMap.put(LOG_SHOP_CREATION, config.getBoolean(LOG_SHOP_CREATION));
-	}
-
-	@Override
-	protected void saveProperties() {
+		super(plugin);
 		
+		properties.add(ENABLED = new Property<Boolean>("enabled", true));
+		properties.add(DEBUG = new Property<Boolean>("debug", false));
+		properties.add(UPDATE_DELTA = new Property<Integer>("update-time", 60));
+		properties.add(PROTECT_SHOPS = new Property<Boolean>("protect-shops", true));
+		properties.add(LOG_SHOP_CREATION = new Property<Boolean>("log-shop-creation", true));
+		
+		initConfig(plugin, "config.yml");
 	}
 
 }
