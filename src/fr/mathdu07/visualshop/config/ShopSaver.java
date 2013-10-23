@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.Iterator;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
@@ -31,7 +32,8 @@ public class ShopSaver extends YamlConfig {
 	}
 
 	@Override
-	protected void saveProperties() {		
+	protected void saveProperties() {
+		config = new YamlConfiguration();
 		Iterator<Shop> it = Shop.getShops();
 		
 		for (int i = 0; it.hasNext(); i++)
