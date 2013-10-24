@@ -52,7 +52,13 @@ public abstract class YamlConfig {
 		}
 	}
 	
-	public void save() throws IOException {		
+	public void save() throws IOException {
+		Iterator<Property<? extends Object>> it = properties.iterator();
+		while (it.hasNext()) {
+			Property<Object> prop = (Property<Object>) it.next();
+			config.set(prop.key, prop.value);
+		}
+		
 		config.save(file);
 	}
 
