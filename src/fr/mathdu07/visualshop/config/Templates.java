@@ -5,18 +5,11 @@ import fr.mathdu07.visualshop.VisualShop;
 public class Templates extends YamlConfig {
 
 	public Templates(VisualShop plugin) {
-		super(plugin, "templates.yml");
-	}
-
-	@Override
-	protected void loadProperties() {
-		// TODO Templates
-
-	}
-
-	@Override
-	protected void saveProperties() {
+		super(plugin);
 		
+		
+		
+		initConfig(plugin, "templates.yml");
 	}
 
 }
