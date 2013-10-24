@@ -1,9 +1,11 @@
 package fr.mathdu07.visualshop.config;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.Iterator;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 
 import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
@@ -11,11 +13,14 @@ import fr.mathdu07.visualshop.VisualShop;
 public class ShopSaver extends YamlConfig {
 
 	public ShopSaver(VisualShop plugin) {
-		super(plugin, "shops.yml");
+		super(plugin);
+		initConfig(plugin, "shops.yml");
 	}
 
 	@Override
-	protected void loadProperties() {
+	protected void load() throws IOException, InvalidConfigurationException {
+		super.load();
+		
 		ConfigurationSection sec = config.getConfigurationSection("shop");
 		
 		if (sec != null) {
@@ -26,17 +31,16 @@ public class ShopSaver extends YamlConfig {
 				sec.get(key);
 			}
 		}
-		
-
 	}
-
+	
 	@Override
-	protected void saveProperties() {		
+	public void save() throws IOException {
+		super.save();
+		
 		Iterator<Shop> it = Shop.getShops();
 		
 		for (int i = 0; it.hasNext(); i++)
 			config.set("shop." + i, it.next());
-		
 	}
 
 }
