@@ -83,6 +83,10 @@ public class VisualShop extends JavaPlugin {
 		command = new VsCommandExecutor();
 		getServer().getPluginCommand("visualshop").setExecutor(command);
 		
+		postEnable();
+	}
+	
+	private void postEnable () {
 		task = getServer().getScheduler().runTaskTimer(this, new ShopTask(), 20l, config.UPDATE_DELTA.value * 20l);
 	}
 	
@@ -97,6 +101,15 @@ public class VisualShop extends JavaPlugin {
 		config = new Config(this);
 		templates = new Templates(this);
 		debug = config.DEBUG.value;		
+	}
+	
+	public void reload() {
+		onDisable();
+		config.reload();
+		debug = config.DEBUG.value;
+		templates.reload();
+		shopSaver.reload();
+		postEnable();
 	}
 	
 	public Economy getEconomy() {

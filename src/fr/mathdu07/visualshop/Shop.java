@@ -69,7 +69,7 @@ public class Shop implements ConfigurationSerializable {
 		if (itemEntity != null)
 			return false;
 		
-		itemEntity = location.getWorld().dropItem(location.clone().add(0.5, 1.2, 0.5), item);
+		itemEntity = location.getWorld().dropItem(location.clone().add(0.5, 1.2, 0.5), item.clone());
 		return true;
 	}
 	
