@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.config.Templates;
 
 public class VsCommandExecutor implements CommandExecutor {
 	
@@ -41,7 +42,7 @@ public class VsCommandExecutor implements CommandExecutor {
 			return true;
 		}
 		
-		send.sendMessage(ChatColor.RED + "Sous-commande inconnue, tapez /" + label + " help"); //TEMPLATE
+		send.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_UNKNOWN_COMMAND.value).replace("{LABEL}", label));
 		return true;
 	}
 	
@@ -59,17 +60,16 @@ public class VsCommandExecutor implements CommandExecutor {
 			try {
 				page = Integer.parseInt(args[1]);
 			} catch (NumberFormatException e) {
-				send.sendMessage(ChatColor.RED + args[1] + " n'est pas un nombre entier"); //TEMPLATE
+				send.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_INTEGER.value).replace("{VALUE}", args[1]));
 			}
 		}
 		
-		//TEMPLATE
-		send.sendMessage(ChatColor.BLUE + "--------------- " + ChatColor.WHITE + "VisualShop Aide " + page + "/" + pages + ChatColor.BLUE + " ------------------");
+		send.sendMessage(Templates.colorStr(VisualShop.getTemplates().HELP_PREFIX.value).replace("{PAGE}", Integer.toString(page)).replace("{PAGE_MAX}", Integer.toString(pages)));
 		for (int i = (page - 1) * commandsPerPage ; i < subCommands.size() && i < page * commandsPerPage; i++)  {
 			VsSubCommand sub = subCommands.get(i);
 			send.sendMessage(sub.getUsage() + " " + ChatColor.GRAY + sub.getDescription());
 		}
-		send.sendMessage(ChatColor.BLUE + "--------------------------------------------------");
+		send.sendMessage(Templates.colorStr(VisualShop.getTemplates().HELP_SUFFIX.value).replace("{PAGE}", Integer.toString(page)).replace("{PAGE_MAX}", Integer.toString(pages)));
 	}
 
 }

@@ -1,21 +1,23 @@
 package fr.mathdu07.visualshop.command;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
+
+import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.config.Templates;
 
 public abstract class VsSubCommand {
 
 	public final void onCommand(CommandSender sender, String label, String[] args) {
 		
 		if (!onlyPlayer() && !(sender instanceof Player)){
-			sender.sendMessage(ChatColor.RED + "Command cannot be performed by the console"); //TEMPLATE
+			sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_CMD_ONLY_PLAYER.value));
 			return;
 		}
 		
 		if (!sender.hasPermission(getPermission())){
-			sender.sendMessage(ChatColor.RED + "Vous n'avez pas la permission de faire cela");//TEMPLATE
+			sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_PERMISSION.value));
 			return;
 		}
 		

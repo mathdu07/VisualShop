@@ -5,7 +5,6 @@ import java.util.Map;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
@@ -21,6 +20,7 @@ import org.bukkit.util.Vector;
 import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsPlayer;
+import fr.mathdu07.visualshop.config.Templates;
 
 public class PlayerListener implements Listener {
 	
@@ -38,34 +38,35 @@ public class PlayerListener implements Listener {
 				
 				if (Shop.getShopAt(b.getLocation()) == null && b.getWorld().getBlockAt(b.getLocation().add(new Vector(0, 1, 0))).getType().equals(Material.AIR)) {
 					Shop shop = vp.createShop(b);
-					p.sendMessage(ChatColor.GREEN + "Commerce crée avec succès");
+					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_SHOP_CREATION.value));
 					
 					if (VisualShop.getVSConfig().LOG_SHOP_CREATION.value)
 						VisualShop.info("Shop created : " + shop);
 				} else if (!b.getWorld().getBlockAt(b.getLocation().add(new Vector(0, 1, 0))).getType().equals(Material.AIR))
-					p.sendMessage(ChatColor.RED + "Le bloc d'au dessus doit être de l'air"); //TEMPLATE
+					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NO_AIR_ABOVE.value));
 				else 
-					p.sendMessage(ChatColor.RED + "Il y a déjà un commerce ici !"); //TEMPLATE
+					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_SHOP_PRESENT.value));
 				e.setCancelled(true);
 			} else if (vp.shouldDeleteShop()) {
 				
 				if (Shop.hasShopAt(b.getLocation())) {
 					Shop.deleteShop(b.getLocation());
-					p.sendMessage(ChatColor.GREEN + "Shop deleted !"); //TEMPLATE
+					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_SHOP_DESTRUCTION.value));
 					vp.setWouldDeleteShop(false);
 					
 				} else
-					p.sendMessage(ChatColor.RED + "Il n'y a pas de commerce ici"); //TEMPLATE
+					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_SHOP_MISSING.value));
 				
 				e.setCancelled(true);
 				
 			} else if (Shop.getShopAt(b.getLocation()) != null) {
 				Shop shop = Shop.getShopAt(b.getLocation());
-				//TEMPLATE (s)
-				p.sendMessage(ChatColor.GRAY + "+---------------[" + ChatColor.WHITE + "Shop" + ChatColor.GRAY + "]---------------+");
-				p.sendMessage("Prix à l'unité : " + ChatColor.YELLOW + shop.getPricePerUnit());
-				p.sendMessage("Item : " + ChatColor.YELLOW + shop.getItem().getType());
-				p.sendMessage(ChatColor.GRAY + "+-----------------------------------+");
+				
+				p.sendMessage(Templates.listToArray(
+						Templates.replaceStrArray(
+						Templates.replaceStrArray(Templates.colorStrArray(VisualShop.getTemplates().SHOP_INFO.value),
+						"{PRICE}", Double.toString(shop.getPricePerUnit())),
+						"{ITEM}", shop.getItem().getType().toString())));
 				//p.sendMessage("Owner :");
 				e.setCancelled(true);
 			}
@@ -76,30 +77,34 @@ public class PlayerListener implements Listener {
 				
 				Shop shop = Shop.getShopAt(b.getLocation());
 				Economy eco = VisualShop.getInstance().getEconomy();
+				int amount = 1;
+				double price = shop.getPricePerUnit() * amount;
 				
-				if (eco.has(p.getName(), shop.getPricePerUnit() * 1)) {
+				if (eco.has(p.getName(), price)) {
 					ItemStack is = shop.getItem();
-					is.setAmount(1);
+					is.setAmount(amount);
 					
 					Map<Integer, ItemStack> exceed = p.getInventory().addItem(is);
 					if (!exceed.isEmpty()) {
-						is.setAmount(1 - exceed.size());
+						is.setAmount(amount - exceed.size());
 						p.getInventory().remove(is);
-						p.sendMessage(ChatColor.RED + "Votre inventaire est complet, achat non pris en compte.");//TEMPLATE
+						p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_INV_FULL.value));
 						return;
 					}
 					
-					EconomyResponse resp = eco.withdrawPlayer(p.getName(), shop.getPricePerUnit() * 1);
+					EconomyResponse resp = eco.withdrawPlayer(p.getName(), price);
 					if (resp.transactionSuccess()) {
-						p.sendMessage(ChatColor.GREEN + "Achat de 1 " + ChatColor.AQUA + shop.getItem().getType() + ChatColor.GREEN + " réussi"); //TEMPLATE
+						p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_TRANSACTION.value).
+								replace("{AMOUNT}", Integer.toString(amount)).replace("{ITEM}", shop.getItem().getType().toString()).
+								replace("{PRICE}", Double.toString(price)).replace("{$}", eco.currencyNamePlural()));
 						p.updateInventory();
 					}
 					else {
 						p.getInventory().remove(is);
-						p.sendMessage(ChatColor.RED + "Erreur lors de l'achat : " + resp.errorMessage); //TEMPLATE
+						p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_BUY_ECO.value).replace("{ERROR}", resp.errorMessage));
 					}
 				} else
-					p.sendMessage(ChatColor.RED + "Vous n'avez pas assez d'argent (" + shop.getPricePerUnit() * 1 + ")."); //TEMPLATE
+					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_ENOUGH_MONEY.value).replace("{PRICE}", Double.toString(price)));
 				e.setCancelled(true);
 			}
 		}

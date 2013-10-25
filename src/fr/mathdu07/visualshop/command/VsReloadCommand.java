@@ -5,13 +5,14 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
 import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.config.Templates;
 
 public class VsReloadCommand extends VsSubCommand {
 
 	@Override
 	public void performCommand(CommandSender sender, String[] args) {
 		VisualShop.getInstance().reload();
-		sender.sendMessage("VisualShop reloaded !"); //TEMPLATE
+		sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_RELOAD.value));
 	}
 
 	@Override
@@ -21,7 +22,7 @@ public class VsReloadCommand extends VsSubCommand {
 
 	@Override
 	public String getDescription() {
-		return "Recharge le plugin"; //TEMPLATE
+		return Templates.colorStr(VisualShop.getTemplates().CMD_RELOAD.value);
 	}
 
 	@Override

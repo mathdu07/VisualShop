@@ -1,6 +1,5 @@
 package fr.mathdu07.visualshop.command;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -8,7 +7,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
+import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsPlayer;
+import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
 
 public class VsCreateCommand extends VsSubCommand {
@@ -16,7 +17,7 @@ public class VsCreateCommand extends VsSubCommand {
 	@Override
 	public void performCommand(CommandSender sender, String[] args) {
 		if (args.length < 1) {
-			sender.sendMessage(ChatColor.RED + "Mauvais usage : " + ChatColor.WHITE + getUsage()); // TEMPLATE
+			sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_BAD_USAGE.value).replace("{USAGE}", getUsage()));
 			return;
 		}
 		
@@ -41,7 +42,7 @@ public class VsCreateCommand extends VsSubCommand {
 					if (material != null)
 						is = new ItemStack(material);
 					else {
-						sender.sendMessage(ChatColor.RED + "Item inconnu : " + ChatColor.ITALIC + args[1]); //TEMPLATE
+						sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_UNKNOWN_ITEM.value).replace("{ITEM}", args[1]));
 						return;
 					}
 				}
@@ -52,21 +53,21 @@ public class VsCreateCommand extends VsSubCommand {
 			}
 			
 			if (is.getType() == null || is.getType() == Material.AIR) {
-				sender.sendMessage(ChatColor.RED + "The material of the shop can not be null");	//TEMPLATE
+				sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_ITEM_AIR.value));
 				return;
 			}
 			
 			
 			try {
 				VsPlayer.getPlayer(player).assignShopCreation(is, price);
-				sender.sendMessage("Click gauche sur un bloc pour créer le commerce");
+				sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().DIV_CREATE_SHOP.value));
 			} catch (VsNegativeOrNullValueException e) {
-				sender.sendMessage(ChatColor.RED + "Le prix ne peut ni être égal à 0, ni négatif"); //TEMPLATE
+				sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_PRICE_NEGATIVE.value));
 			}
 			
 			
 		} catch (NumberFormatException e) {
-			sender.sendMessage(ChatColor.RED + args[0] + " n'est pas un nombre"); //TEMPLATE
+			sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_INTEGER.value).replace("{VALUE}", args[0]));
 		}
 	}
 
@@ -77,12 +78,12 @@ public class VsCreateCommand extends VsSubCommand {
 
 	@Override
 	public String getUsage() {
-		return super.getUsage() + " <price> {item/this}";
+		return super.getUsage() + " <price> {item}";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Créer un commerce"; // TEMPLATE
+		return Templates.colorStr(VisualShop.getTemplates().CMD_CREATE.value);
 	}
 
 	@Override
