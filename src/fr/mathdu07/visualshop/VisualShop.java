@@ -52,6 +52,9 @@ public class VisualShop extends JavaPlugin {
 		try {
 			shopSaver.save();
 		} catch (IOException e) {e.printStackTrace();}
+
+		if (config.LOG_TRANSACTIONS.value)
+			VsTransaction.saveLog();
 		
 		Shop.removeShops();
 		
@@ -88,6 +91,8 @@ public class VisualShop extends JavaPlugin {
 	
 	private void postEnable () {
 		task = getServer().getScheduler().runTaskTimer(this, new ShopTask(), 20l, config.UPDATE_DELTA.value * 20l);
+		if (config.LOG_TRANSACTIONS.value)
+			VsTransaction.startLog();
 	}
 	
 	@Override
