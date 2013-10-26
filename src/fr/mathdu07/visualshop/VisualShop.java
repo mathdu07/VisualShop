@@ -89,6 +89,7 @@ public class VisualShop extends JavaPlugin {
 	
 	private void postEnable () {
 		task = getServer().getScheduler().runTaskTimer(this, new ShopTask(), 20l, config.UPDATE_DELTA.value * 20l);
+		VsTransaction.startLog();
 	}
 	
 	@Override

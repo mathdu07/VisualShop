@@ -45,14 +45,6 @@ public class VsTransaction {
 		this.player = player;
 		this.buying = true;
 		timestamp = System.currentTimeMillis();
-		
-		if (writer == null) {
-			try {
-				writer = new BufferedWriter(new FileWriter(new File(VisualShop.getInstance().getDataFolder(), "transactions.log"), true));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
 	/**
@@ -157,7 +149,15 @@ public class VsTransaction {
 				+ ", type=" + (buying ? "purchase" : "sale") + "]";
 	}
 	
-	public static void saveLog() {
+	protected static void startLog() {
+		try {
+			writer = new BufferedWriter(new FileWriter(new File(VisualShop.getInstance().getDataFolder(), "transactions.log"), true));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	protected static void saveLog() {
 		try {
 			writer.flush();
 			writer.close();
