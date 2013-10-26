@@ -40,6 +40,11 @@ public class Config extends YamlConfig {
 	 * In seconds
 	 */
 	public final Property<Integer> UNDO_MAX_TIME;
+	
+	/**
+	 * Whether log or not transactions
+	 */
+	public final Property<Boolean> LOG_TRANSACTIONS;
 
 	public Config(VisualShop plugin) {
 		super(plugin);
@@ -49,7 +54,8 @@ public class Config extends YamlConfig {
 		properties.add(UPDATE_DELTA = new Property<Integer>("update-time", 60));
 		properties.add(PROTECT_SHOPS = new Property<Boolean>("protect-shops", true));
 		properties.add(LOG_SHOP_CREATION = new Property<Boolean>("log-shop-creation", true));
-		properties.add(UNDO_MAX_TIME= new Property<Integer>("undo-max-time", 120));
+		properties.add(UNDO_MAX_TIME = new Property<Integer>("undo-max-time", 120));
+		properties.add(LOG_TRANSACTIONS = new Property<Boolean>("log-transactions", true));
 		
 		initConfig(plugin, "config.yml");
 	}

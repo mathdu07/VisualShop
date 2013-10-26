@@ -80,10 +80,13 @@ public class VsTransaction {
 							replace("{PRICE}", Double.toString(cost)).replace("{$}", eco.currencyNamePlural()));
 					p.updateInventory();
 					player.addTransaction(this);
-					try {
-						writer.write("New " + this);
-						writer.newLine();
-					} catch (IOException e) {e.printStackTrace();}
+					
+					if (VisualShop.getVSConfig().LOG_TRANSACTIONS.value) {
+						try {
+							writer.write("New " + this);
+							writer.newLine();
+						} catch (IOException e) {e.printStackTrace();}
+					}
 					
 					
 					return true;
@@ -132,10 +135,12 @@ public class VsTransaction {
 				throw new VsEconomyException(result.errorMessage, result.type);
 			
 			p.getInventory().removeItem(is);
-			try {
-				writer.write("Undo " + this);
-				writer.newLine();
-			} catch (IOException e) {e.printStackTrace();}
+			if (VisualShop.getVSConfig().LOG_TRANSACTIONS.value) {
+				try {
+					writer.write("Undo " + this);
+					writer.newLine();
+				} catch (IOException e) {e.printStackTrace();}
+			}
 			
 		} else {
 			//TODO Support undo sell transaction
