@@ -52,6 +52,7 @@ public class VisualShop extends JavaPlugin {
 		try {
 			shopSaver.save();
 		} catch (IOException e) {e.printStackTrace();}
+		VsTransaction.saveLog();
 		
 		Shop.removeShops();
 		

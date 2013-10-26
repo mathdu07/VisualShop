@@ -11,6 +11,8 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsEconomyException;
@@ -56,13 +58,18 @@ public class VsTransaction {
 	/**
 	 * Apply the transaction by giving/taking the money
 	 * and taking/giving the item
-	 * @return if the transaction is success
+	 * @return if the transaction is a success
 	 */
 	public boolean applyTransaction() {
 		final Economy eco = VisualShop.getInstance().getEconomy();
 		final Player p = player.getBukkitPlayer();
 		
 		if (buying) {
+			
+			if (!p.hasPermission(new Permission("visualshop.common.use", PermissionDefault.TRUE))) {
+				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_PERMISSION.value));
+				return false;
+			}
 			
 			if (eco.has(p.getName(), cost)) {
 				Map<Integer, ItemStack> exceed = p.getInventory().addItem(is);
@@ -110,7 +117,10 @@ public class VsTransaction {
 	 * @return if the transaction can be undone
 	 */
 	public boolean canUndoTransaction() {
-		return (System.currentTimeMillis() - timestamp) <= 120_000; //TODO Add time max to undo in config
+		if (VisualShop.getVSConfig().UNDO_MAX_TIME.value == -1)
+			return true;
+		else
+			return (System.currentTimeMillis() - timestamp) <= VisualShop.getVSConfig().UNDO_MAX_TIME.value * 1000;
 	}
 	
 	public void undoTransation() throws VsTooLateException, VsNoItemInInventoryException, VsEconomyException {
@@ -121,7 +131,7 @@ public class VsTransaction {
 		final Economy eco = VisualShop.getInstance().getEconomy();
 		
 		if (buying) {
-			if (!p.getInventory().contains(is))
+			if (!p.getInventory().containsAtLeast(is, is.getAmount()))
 				throw new VsNoItemInInventoryException(is);
 			
 			EconomyResponse result = eco.depositPlayer(p.getName(), cost);
@@ -129,7 +139,7 @@ public class VsTransaction {
 			if (!result.transactionSuccess())
 				throw new VsEconomyException(result.errorMessage, result.type);
 			
-			p.getInventory().remove(is);
+			p.getInventory().removeItem(is);
 			try {
 				writer.write("Undo " + this);
 				writer.newLine();
@@ -145,6 +155,15 @@ public class VsTransaction {
 		return "VsTransaction [item=" + is.getType().toString() + ",amount=" + is.getAmount() + ", cost=" + cost +
 				", player=" + player.getBukkitPlayer().getName() + ", timestamp=" + timestamp
 				+ ", type=" + (buying ? "purchase" : "sale") + "]";
+	}
+	
+	public static void saveLog() {
+		try {
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

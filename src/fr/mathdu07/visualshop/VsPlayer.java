@@ -1,5 +1,6 @@
 package fr.mathdu07.visualshop;
 
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -12,6 +13,7 @@ import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsEconomyException;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
 import fr.mathdu07.visualshop.exception.VsNoItemInInventoryException;
+import fr.mathdu07.visualshop.exception.VsNullException;
 import fr.mathdu07.visualshop.exception.VsTooLateException;
 
 public class VsPlayer {
@@ -51,6 +53,14 @@ public class VsPlayer {
 		transactions.push(trans);
 	}
 	
+	public VsTransaction getLastTransaction() {
+		try {
+			return transactions.peek();
+		} catch (EmptyStackException e) {
+			return null;
+		}
+	}
+	
 	/**
 	 * Undo the last transaction of the player
 	 * @throws VsTooLateException
@@ -58,10 +68,14 @@ public class VsPlayer {
 	 * @throws VsEconomyException
 	 * @return the transaction undone
 	 */
-	public VsTransaction undoLastTransaction() throws VsTooLateException, VsNoItemInInventoryException, VsEconomyException {
-		VsTransaction trans = transactions.peek();
+	public VsTransaction undoLastTransaction() throws VsTooLateException, VsNoItemInInventoryException, VsEconomyException, VsNullException {
+		try {
+			VsTransaction trans = transactions.peek();
+			trans.undoTransation();
+		} catch (EmptyStackException e) {
+			throw new VsNullException();
+		}
 		
-		trans.undoTransation();
 		return transactions.pop();
 	}
 	
@@ -69,17 +83,20 @@ public class VsPlayer {
 		
 		for (int i = 0; i < transactionCount; i++) {
 			
-			VsTransaction t = transactions.peek();
+			VsTransaction t = getLastTransaction();
 			try {
 				undoLastTransaction();
 			} catch (VsTooLateException e) {
-				//TODO Add time max to undo in config
+				bukkitPlayer.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_UNDO_TOO_LATE.value).replace("{TIME}", Integer.toString(VisualShop.getVSConfig().UNDO_MAX_TIME.value)));
 				return i;
 			} catch (VsNoItemInInventoryException e) {
 				bukkitPlayer.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_INV_NO_ITEM.value).replace("{ITEM}", t.is.getType().toString()));
 				return i;
 			} catch (VsEconomyException e) {
 				bukkitPlayer.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_BUY_ECO.value).replace("{ERROR}", e.errorMsg));
+				return i;
+			} catch (VsNullException e) {
+				bukkitPlayer.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOTHING_UNDO.value));
 				return i;
 			}
 		}

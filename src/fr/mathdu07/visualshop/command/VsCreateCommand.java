@@ -62,7 +62,7 @@ public class VsCreateCommand extends VsSubCommand {
 				VsPlayer.getPlayer(player).assignShopCreation(is, price);
 				sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().DIV_CREATE_SHOP.value));
 			} catch (VsNegativeOrNullValueException e) {
-				sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_PRICE_NEGATIVE.value));
+				sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NUMBER_NEGATIVE.value));
 			}
 			
 			

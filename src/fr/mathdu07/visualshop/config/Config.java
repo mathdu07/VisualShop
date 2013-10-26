@@ -34,6 +34,12 @@ public class Config extends YamlConfig {
 	 * Boolean property 
 	 */
 	public final Property<Boolean> LOG_SHOP_CREATION;
+	
+	/**
+	 * The maximum time after a purchase/sell that the player can undo a transaction
+	 * In seconds
+	 */
+	public final Property<Integer> UNDO_MAX_TIME;
 
 	public Config(VisualShop plugin) {
 		super(plugin);
@@ -43,6 +49,7 @@ public class Config extends YamlConfig {
 		properties.add(UPDATE_DELTA = new Property<Integer>("update-time", 60));
 		properties.add(PROTECT_SHOPS = new Property<Boolean>("protect-shops", true));
 		properties.add(LOG_SHOP_CREATION = new Property<Boolean>("log-shop-creation", true));
+		properties.add(UNDO_MAX_TIME= new Property<Integer>("undo-max-time", 120));
 		
 		initConfig(plugin, "config.yml");
 	}
