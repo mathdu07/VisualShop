@@ -1,5 +1,9 @@
 package fr.mathdu07.visualshop;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedWriter;
 import java.util.Map;
 
 import net.milkbowl.vault.economy.Economy;
@@ -22,6 +26,8 @@ public class VsTransaction {
 	public final long timestamp;
 	public final boolean buying;
 	
+	private static BufferedWriter writer;
+	
 	/**
 	 * A VisualShop Transaction
 	 * @param shop
@@ -29,14 +35,22 @@ public class VsTransaction {
 	 * @param player
 	 * @param buyingOrSelling - true if it's a purchase or false if it's a sale
 	 */
-	public VsTransaction(Shop shop, int amount, VsPlayer player, boolean buyingOrSelling) {
+	public VsTransaction(Shop shop, int amount, VsPlayer player) {
 		this.shop = shop;
 		this.is = shop.getItem().clone();
 		is.setAmount(amount);
 		this.cost = shop.getPricePerUnit() * amount;
 		this.player = player;
-		this.buying = buyingOrSelling;
+		this.buying = true;
 		timestamp = System.currentTimeMillis();
+		
+		if (writer == null) {
+			try {
+				writer = new BufferedWriter(new FileWriter(new File(VisualShop.getInstance().getDataFolder(), "transactions.log"), true));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
@@ -66,6 +80,12 @@ public class VsTransaction {
 							replace("{AMOUNT}", Integer.toString(is.getAmount())).replace("{ITEM}", shop.getItem().getType().toString()).
 							replace("{PRICE}", Double.toString(cost)).replace("{$}", eco.currencyNamePlural()));
 					p.updateInventory();
+					player.addTransaction(this);
+					try {
+						writer.write("New " + this);
+						writer.newLine();
+					} catch (IOException e) {e.printStackTrace();}
+					
 					
 					return true;
 				}
@@ -110,9 +130,21 @@ public class VsTransaction {
 				throw new VsEconomyException(result.errorMessage, result.type);
 			
 			p.getInventory().remove(is);
+			try {
+				writer.write("Undo " + this);
+				writer.newLine();
+			} catch (IOException e) {e.printStackTrace();}
+			
 		} else {
 			//TODO Support undo sell transaction
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "VsTransaction [item=" + is.getType().toString() + ",amount=" + is.getAmount() + ", cost=" + cost +
+				", player=" + player.getBukkitPlayer().getName() + ", timestamp=" + timestamp
+				+ ", type=" + (buying ? "purchase" : "sale") + "]";
 	}
 
 }

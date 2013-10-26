@@ -49,7 +49,6 @@ public class VsPlayer {
 	 */
 	public void addTransaction(VsTransaction trans) {
 		transactions.push(trans);
-		//TODO log
 	}
 	
 	/**
@@ -64,10 +63,9 @@ public class VsPlayer {
 		
 		trans.undoTransation();
 		return transactions.pop();
-		//TODO log
 	}
 	
-	public int undoTransations(int transactionCount) {
+	public int undoTransactions(int transactionCount) {
 		
 		for (int i = 0; i < transactionCount; i++) {
 			

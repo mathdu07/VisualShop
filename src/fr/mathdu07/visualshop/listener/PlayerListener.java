@@ -20,6 +20,7 @@ import org.bukkit.util.Vector;
 import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsPlayer;
+import fr.mathdu07.visualshop.VsTransaction;
 import fr.mathdu07.visualshop.config.Templates;
 
 public class PlayerListener implements Listener {
@@ -76,35 +77,10 @@ public class PlayerListener implements Listener {
 			if (Shop.hasShopAt(b.getLocation())) {
 				
 				Shop shop = Shop.getShopAt(b.getLocation());
-				Economy eco = VisualShop.getInstance().getEconomy();
 				int amount = 1;
-				double price = shop.getPricePerUnit() * amount;
+				VsTransaction transaction = new VsTransaction(shop, amount, vp);
+				transaction.applyTransaction();
 				
-				if (eco.has(p.getName(), price)) {
-					ItemStack is = shop.getItem();
-					is.setAmount(amount);
-					
-					Map<Integer, ItemStack> exceed = p.getInventory().addItem(is);
-					if (!exceed.isEmpty()) {
-						is.setAmount(amount - exceed.size());
-						p.getInventory().remove(is);
-						p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_INV_FULL.value));
-						return;
-					}
-					
-					EconomyResponse resp = eco.withdrawPlayer(p.getName(), price);
-					if (resp.transactionSuccess()) {
-						p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_TRANSACTION.value).
-								replace("{AMOUNT}", Integer.toString(amount)).replace("{ITEM}", shop.getItem().getType().toString()).
-								replace("{PRICE}", Double.toString(price)).replace("{$}", eco.currencyNamePlural()));
-						p.updateInventory();
-					}
-					else {
-						p.getInventory().remove(is);
-						p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_BUY_ECO.value).replace("{ERROR}", resp.errorMessage));
-					}
-				} else
-					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_ENOUGH_MONEY.value).replace("{PRICE}", Double.toString(price)));
 				e.setCancelled(true);
 			}
 		}
