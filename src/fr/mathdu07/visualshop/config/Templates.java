@@ -22,6 +22,7 @@ public class Templates extends YamlConfig {
 	public final Property<String> ERR_INV_FULL;
 	public final Property<String> ERR_BUY_ECO;
 	public final Property<String> ERR_NOT_ENOUGH_MONEY;
+	public final Property<String> ERR_INV_NO_ITEM;
 	
 	public final Property<String> DIV_CREATE_SHOP;
 	public final Property<String> DIV_DELETE_SHOP;
@@ -58,6 +59,7 @@ public class Templates extends YamlConfig {
 		properties.add(ERR_INV_FULL = new Property<String>("error.inventory-full", "&4Votre inventaire est complet, achat non pris en compte"));
 		properties.add(ERR_BUY_ECO = new Property<String>("error.buy-economy", "&cErreur lors de l'achat : &4{ERROR}&c"));
 		properties.add(ERR_NOT_ENOUGH_MONEY = new Property<String>("error.not-enough-money", "&4Vous n'avez pas assez d'argent (Cout : &c{PRICE}&4)"));
+		properties.add(ERR_INV_NO_ITEM = new Property<String>("error.inventory-no-item", "&4Vous n'avez pas de {ITEM} dans votre inventaire"));
 		
 		properties.add(DIV_CREATE_SHOP = new Property<String>("divers.create-shop", "Click gauche sur un bloc pour créer le commerce"));
 		properties.add(DIV_DELETE_SHOP = new Property<String>("divers.delete-shop", "Click gauche pour supprimer le commerce"));

@@ -2,12 +2,17 @@ package fr.mathdu07.visualshop;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import fr.mathdu07.visualshop.config.Templates;
+import fr.mathdu07.visualshop.exception.VsEconomyException;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
+import fr.mathdu07.visualshop.exception.VsNoItemInInventoryException;
+import fr.mathdu07.visualshop.exception.VsTooLateException;
 
 public class VsPlayer {
 	
@@ -31,8 +36,57 @@ public class VsPlayer {
 	 */
 	private boolean wouldDeleteShop = false;
 	
+	private Stack<VsTransaction> transactions;
+	
 	private VsPlayer(Player p) {
 		this.bukkitPlayer = p;
+		this.transactions = new Stack<VsTransaction>();
+	}
+	
+	/**
+	 * Add the transaction to the player
+	 * @param trans - the transaction done
+	 */
+	public void addTransaction(VsTransaction trans) {
+		transactions.push(trans);
+		//TODO log
+	}
+	
+	/**
+	 * Undo the last transaction of the player
+	 * @throws VsTooLateException
+	 * @throws VsNoItemInInventoryException
+	 * @throws VsEconomyException
+	 * @return the transaction undone
+	 */
+	public VsTransaction undoLastTransaction() throws VsTooLateException, VsNoItemInInventoryException, VsEconomyException {
+		VsTransaction trans = transactions.peek();
+		
+		trans.undoTransation();
+		return transactions.pop();
+		//TODO log
+	}
+	
+	public int undoTransations(int transactionCount) {
+		
+		for (int i = 0; i < transactionCount; i++) {
+			
+			VsTransaction t = transactions.peek();
+			try {
+				undoLastTransaction();
+			} catch (VsTooLateException e) {
+				//TODO Add time max to undo in config
+				return i;
+			} catch (VsNoItemInInventoryException e) {
+				bukkitPlayer.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_INV_NO_ITEM.value).replace("{ITEM}", t.is.getType().toString()));
+				return i;
+			} catch (VsEconomyException e) {
+				bukkitPlayer.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_BUY_ECO.value).replace("{ERROR}", e.errorMsg));
+				return i;
+			}
+		}
+		
+		return transactionCount;
 	}
 	
 	public Player getBukkitPlayer() {
