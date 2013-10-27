@@ -9,6 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.Vector;
 
 import fr.mathdu07.visualshop.Shop;
@@ -67,6 +69,9 @@ public class PlayerListener implements Listener {
 			}
 		} else if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Block b = e.getClickedBlock();
+			
+			if (p.getItemInHand().getType().equals(Material.SIGN) && p.hasPermission(new Permission("visualshop.common.sign", PermissionDefault.TRUE))) //TODO Check also the permission related to the shop type
+				return;
 			
 			if (Shop.hasShopAt(b.getLocation())) {
 				
