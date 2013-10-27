@@ -44,6 +44,13 @@ public class Templates extends YamlConfig {
 	public final Property<String> CONFIRMED_UNDO;
 	public final Property<String> CONFIRMED_UNDOS;
 	
+	public final Property<String> SHOP_SELL;
+	public final Property<String> SHOP_ADMIN;
+	public final Property<String> SHOP_SIGN_1;
+	public final Property<String> SHOP_SIGN_2;
+	public final Property<String> SHOP_SIGN_3;
+	public final Property<String> SHOP_SIGN_4;
+	
 	public final Property<List<String>> SHOP_INFO;
 
 	public Templates(VisualShop plugin) {
@@ -85,6 +92,13 @@ public class Templates extends YamlConfig {
 		properties.add(CONFIRMED_TRANSACTION = new Property<String>("confirmed.transaction", "&aAchat de &7{AMOUNT}&a &9{ITEM}&a pour &6{PRICE}&a {$} réussi"));
 		properties.add(CONFIRMED_UNDO = new Property<String>("confirmed.undo", "&aVous avez annuler la transaction de &7{AMOUNT}&a &9{ITEM}&a pour &6{PRICE}&a {$}"));
 		properties.add(CONFIRMED_UNDOS = new Property<String>("confirmed.undos", "&aVous avez annulé les {NUMBER} dernières transactions"));
+		
+		properties.add(SHOP_SELL = new Property<String>("shop.sell", "Vente"));
+		properties.add(SHOP_ADMIN = new Property<String>("shop.admin-name", "Serveur"));
+		properties.add(SHOP_SIGN_1 = new Property<String>("shop.sign.1", "{SHOP} de"));
+		properties.add(SHOP_SIGN_2 = new Property<String>("shop.sign.2", "{ITEM}"));
+		properties.add(SHOP_SIGN_3 = new Property<String>("shop.sign.3", "Prix: &3{PRICE}"));
+		properties.add(SHOP_SIGN_4 = new Property<String>("shop.sign.4", "De {OWNER}"));
 		
 		List<String> shopInfos = new ArrayList<String>();
 		shopInfos.add("&7+---------------[&fShop&7]---------------+");
