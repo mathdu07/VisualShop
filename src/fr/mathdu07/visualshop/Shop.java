@@ -47,6 +47,7 @@ public class Shop implements ConfigurationSerializable {
 		
 		spawnItem();
 		updateItemPositionLater();
+		VisualShop.getShopSaver().addShop(this);
 		shops.add(this);
 	}
 	
@@ -226,6 +227,7 @@ public class Shop implements ConfigurationSerializable {
 			if (s.getLocation().equals(loc)) {
 				s.itemEntity.remove();
 				shops.remove(s);
+				VisualShop.getShopSaver().deleteShop(s);
 				
 				if (VisualShop.getVSConfig().LOG_SHOP_CREATION.value)
 					VisualShop.info("Shop deleted : " + s);

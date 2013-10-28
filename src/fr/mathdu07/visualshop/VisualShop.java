@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import fr.mathdu07.visualshop.command.VsCommandExecutor;
 import fr.mathdu07.visualshop.config.Config;
+import fr.mathdu07.visualshop.config.MysqlShopSaver;
 import fr.mathdu07.visualshop.config.ShopSaver;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.listener.BlockListener;
@@ -48,10 +49,6 @@ public class VisualShop extends JavaPlugin {
 			Shop s = it.next();
 			s.despawnItem();
 		}
-		
-		try {
-			shopSaver.save();
-		} catch (IOException e) {e.printStackTrace();}
 
 		if (config.LOG_TRANSACTIONS.value)
 			VsTransaction.saveLog();
@@ -81,7 +78,7 @@ public class VisualShop extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		
-		shopSaver = new ShopSaver(this);
+		shopSaver = new MysqlShopSaver();
 		
 		command = new VsCommandExecutor();
 		getServer().getPluginCommand("visualshop").setExecutor(command);
@@ -113,7 +110,7 @@ public class VisualShop extends JavaPlugin {
 		config.reload();
 		debug = config.DEBUG.value;
 		templates.reload();
-		shopSaver.reload();
+		shopSaver.reloadShops();
 		postEnable();
 	}
 	
@@ -154,6 +151,10 @@ public class VisualShop extends JavaPlugin {
 	
 	public static Templates getTemplates() {
 		return instance.templates;
+	}
+	
+	public static ShopSaver getShopSaver() {
+		return instance.shopSaver;
 	}
 	
 	public static VisualShop getInstance() {
