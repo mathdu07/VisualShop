@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Iterator;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -23,6 +24,7 @@ public class Shop implements ConfigurationSerializable {
 	
 	private static final Set<Shop> shops = new HashSet<Shop>(); 
 	
+	private final UUID uid;
 	private double pricePerUnit;
 	private final ItemStack item;
 	private Location location;
@@ -38,9 +40,14 @@ public class Shop implements ConfigurationSerializable {
 	}
 	
 	public Shop (double pricePerUnit, ItemStack itemstack, Location loc) throws VsNegativeOrNullValueException {
+		this(UUID.randomUUID(), pricePerUnit, itemstack, loc);
+	}
+	
+	public Shop (UUID uid, double pricePerUnit, ItemStack itemstack, Location loc) throws VsNegativeOrNullValueException {
 		if (pricePerUnit <= 0)
 			throw new VsNegativeOrNullValueException();
 		
+		this.uid = uid;
 		this.pricePerUnit = pricePerUnit;
 		this.item = itemstack;
 		this.location = loc;
@@ -98,6 +105,13 @@ public class Shop implements ConfigurationSerializable {
 	}
 
 	/**
+	 * @return the Unique ID of the shop
+	 */
+	public UUID getUid() {
+		return uid;
+	}
+
+	/**
 	 * @return the pricePerUnit
 	 */
 	public double getPricePerUnit() {
@@ -131,10 +145,20 @@ public class Shop implements ConfigurationSerializable {
 	public Location getLocation() {
 		return location;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Shop) {
+			Shop s = (Shop) o;
+			return uid.equals(s.getUid());
+		} else
+			return false;
+	}
 
 	public Map<String, Object> serialize() {
 		HashMap<String, Object> map = new HashMap<>();
 		
+		map.put("uid", uid.toString());
 		map.put("price", pricePerUnit);
 		map.put("item", item);
 		map.put("world", location.getWorld().getName());
@@ -147,11 +171,11 @@ public class Shop implements ConfigurationSerializable {
 	
 	public static Shop deserialize(Map<String, Object> map) {
 		World world = Bukkit.getWorld((String) map.get("world"));
-		
+		UUID uid = UUID.fromString((String) map.get("uid"));
 		int x = (int) map.get("x"), y = (int) map.get("y"), z = (int) map.get("z");
 		
 		try {
-			return new Shop((double) map.get("price"), (ItemStack) map.get("item"), new Location(world, x, y, z));
+			return new Shop(uid, (double) map.get("price"), (ItemStack) map.get("item"), new Location(world, x, y, z));
 		} catch (VsNegativeOrNullValueException e) {
 			e.printStackTrace();
 			return null;
@@ -284,7 +308,7 @@ public class Shop implements ConfigurationSerializable {
 	
 	@Override
 	public String toString() {
-		return "[item=" + item.getType() + ";price=" + pricePerUnit + 
+		return "[uid=" + uid + "; item=" + item.getType() + ";price=" + pricePerUnit + 
 				";x=" + location.getBlockX() + ";y=" + location.getBlockY() + ";z=" + location.getBlockZ() + "]";
 	}
 }
