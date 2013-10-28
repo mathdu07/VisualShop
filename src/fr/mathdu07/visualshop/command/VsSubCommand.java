@@ -2,7 +2,6 @@ package fr.mathdu07.visualshop.command;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
 
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.config.Templates;
@@ -74,7 +73,7 @@ public abstract class VsSubCommand {
 	/**
 	 * @return permission needed to execute the command
 	 */
-	public abstract Permission getPermission();
+	public abstract String getPermission();
 	/**
 	 * @return the name of the sub command
 	 */

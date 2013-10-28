@@ -2,10 +2,9 @@ package fr.mathdu07.visualshop.command;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 
 import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.VsPermissions;
 import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.config.Templates;
 
@@ -34,8 +33,8 @@ public class VsDeleteCommand extends VsSubCommand {
 	}
 
 	@Override
-	public Permission getPermission() {
-		return new Permission("visualshop.delete", PermissionDefault.OP);
+	public String getPermission() {
+		return VsPermissions.COMMON_DELETE;
 	}
 
 	@Override

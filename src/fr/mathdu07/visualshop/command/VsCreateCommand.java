@@ -4,10 +4,9 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 
 import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.VsPermissions;
 import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
@@ -87,8 +86,8 @@ public class VsCreateCommand extends VsSubCommand {
 	}
 
 	@Override
-	public Permission getPermission() {
-		return new Permission("visualshop.create", PermissionDefault.OP);
+	public String getPermission() {
+		return VsPermissions.COMMON_CREATE;
 	}
 
 	@Override

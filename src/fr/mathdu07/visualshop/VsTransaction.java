@@ -1,9 +1,9 @@
 package fr.mathdu07.visualshop;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.BufferedWriter;
 import java.util.Map;
 
 import net.milkbowl.vault.economy.Economy;
@@ -11,8 +11,6 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsEconomyException;
@@ -58,7 +56,7 @@ public class VsTransaction {
 		
 		if (buying) {
 			
-			if (!p.hasPermission(new Permission("visualshop.common.use", PermissionDefault.TRUE))) {
+			if (!p.hasPermission(VsPermissions.COMMON_USE)) {
 				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_PERMISSION.value));
 				return false;
 			}

@@ -10,11 +10,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 
 import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.VsPermissions;
 import fr.mathdu07.visualshop.config.Templates;
 
 public class BlockListener implements Listener {
@@ -40,7 +39,7 @@ public class BlockListener implements Listener {
 		Block b = e.getBlock();
 		
 		if (Shop.hasShopAt(e.getBlockAgainst().getLocation()) && b.getState() instanceof Sign
-				&& e.getPlayer().hasPermission(new Permission("visualshop.common.sign", PermissionDefault.TRUE))) //TODO Check also the permission related to the shop type
+				&& e.getPlayer().hasPermission(VsPermissions.COMMON_SIGN)) //TODO Check if the player own the shop
 			signsPlaced.put(b, Shop.getShopAt(e.getBlockAgainst().getLocation()));
 		
 		if (Shop.hasShopAt(b.getWorld(), b.getX(), b.getY() - 1, b.getZ()))

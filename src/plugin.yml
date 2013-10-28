@@ -8,3 +8,42 @@ commands:
   visualshop:
     description: Main command for the VisualShop plugin
     aliases: [vs, shop]
+permissions:
+  visualshop.*:
+    description: Give all permission of the plugin
+    default: false
+    children:
+      visualshop.admin.*: true
+      visualshop.common.*: true
+  visualshop.admin.*:
+    description: Give all admin permissions
+    default: op
+    children:
+      visualshop.admin.reload: true
+  visualshop.admin.reload:
+    description: Allow to reload the plugin configurations
+    default: op
+  visualshop.common.*:
+    description: Give all the common abilities
+    default: false
+    children:
+      visualshop.common.use: true
+      visualshop.common.undo: true
+      visualshop.common.create: true
+      visualshop.common.delete: true
+      visualshop.common.sign: true
+  visualshop.common.use:
+    description: Give the ability to use any type of shops
+    default: true
+  visualshop.common.undo:
+    description: Give the ability to undo previous transactions
+    default: true
+  visualshop.common.create:
+    description: Give the ability to create any type of shops
+    default: op
+  visualshop.common.delete:
+    description: Give the ability to delete any type of shops
+    default: op
+  visualshop.common.sign:
+    description: Auto complete the sign when placed against a shop
+    default: op
