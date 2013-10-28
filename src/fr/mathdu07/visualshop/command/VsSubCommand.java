@@ -11,7 +11,7 @@ public abstract class VsSubCommand {
 
 	public final void onCommand(CommandSender sender, String label, String[] args) {
 		
-		if (!onlyPlayer() && !(sender instanceof Player)){
+		if (onlyPlayer() && !(sender instanceof Player)){
 			sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_CMD_ONLY_PLAYER.value));
 			return;
 		}
