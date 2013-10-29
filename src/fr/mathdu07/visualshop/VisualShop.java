@@ -1,6 +1,5 @@
 package fr.mathdu07.visualshop;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -53,7 +52,7 @@ public class VisualShop extends JavaPlugin {
 		if (config.LOG_TRANSACTIONS.value)
 			VsTransaction.saveLog();
 		
-		Shop.removeShops();
+		shopSaver.onDisable();
 		
 		task.cancel();
 	}
@@ -74,11 +73,18 @@ public class VisualShop extends JavaPlugin {
 			return;
 		}
 		
+		if (config.MYSQL_LOGIN.equals(config.MYSQL_LOGIN.defaultValue)) {
+			warn("You must specify the MySQL login in order to use this plugin");
+			this.setEnabled(false);
+			return;
+		}
+		
+		shopSaver = new MysqlShopSaver(config.MYSQL_HOST.value, config.MYSQL_LOGIN.value, config.MYSQL_PASSWORD.value, 
+				config.MYSQL_DATABASE.value, config.MYSQL_PORT.value);
+		
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(blockListener, this);
-		
-		shopSaver = new MysqlShopSaver();
 		
 		command = new VsCommandExecutor();
 		getServer().getPluginCommand("visualshop").setExecutor(command);
@@ -87,6 +93,7 @@ public class VisualShop extends JavaPlugin {
 	}
 	
 	private void postEnable () {
+		shopSaver.onEnable();
 		task = getServer().getScheduler().runTaskTimer(this, new ShopTask(), 20l, config.UPDATE_DELTA.value * 20l);
 		if (config.LOG_TRANSACTIONS.value)
 			VsTransaction.startLog();
