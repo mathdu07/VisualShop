@@ -36,4 +36,9 @@ public class MysqlShopSaver implements ShopSaver {
 			VisualShop.severe("Can't load shops from MySQL after plugin reloading");
 	}
 
+	public boolean isShopSaved(Shop shop) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

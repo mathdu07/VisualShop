@@ -6,6 +6,8 @@ public interface ShopSaver {
 	
 	public boolean addShop(Shop shop);
 	
+	public boolean isShopSaved(Shop shop);
+	
 	public boolean updateShop(Shop shop);
 	
 	public boolean deleteShop(Shop shop);

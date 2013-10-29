@@ -54,8 +54,11 @@ public class Shop implements ConfigurationSerializable {
 		
 		spawnItem();
 		updateItemPositionLater();
-		VisualShop.getShopSaver().addShop(this);
+		if (!VisualShop.getShopSaver().isShopSaved(this))
+			VisualShop.getShopSaver().addShop(this);
 		shops.add(this);
+		
+		VisualShop.debug("Creating shop " + this);
 	}
 	
 	private void updateItemPositionLater() {
@@ -308,7 +311,7 @@ public class Shop implements ConfigurationSerializable {
 	
 	@Override
 	public String toString() {
-		return "[uid=" + uid + "; item=" + item.getType() + ";price=" + pricePerUnit + 
+		return "[uid=" + uid + ";item=" + item.getType() + ";price=" + pricePerUnit + 
 				";x=" + location.getBlockX() + ";y=" + location.getBlockY() + ";z=" + location.getBlockZ() + "]";
 	}
 }
