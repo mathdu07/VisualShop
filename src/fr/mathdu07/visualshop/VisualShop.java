@@ -52,9 +52,11 @@ public class VisualShop extends JavaPlugin {
 		if (config.LOG_TRANSACTIONS.value)
 			VsTransaction.saveLog();
 		
-		shopSaver.onDisable();
+		if (shopSaver != null)
+			shopSaver.onDisable();
 		
-		task.cancel();
+		if (task != null)
+			task.cancel();
 	}
 
 	@Override
@@ -73,7 +75,7 @@ public class VisualShop extends JavaPlugin {
 			return;
 		}
 		
-		if (config.MYSQL_LOGIN.equals(config.MYSQL_LOGIN.defaultValue)) {
+		if (config.MYSQL_LOGIN.value.equals(config.MYSQL_LOGIN.defaultValue)) {
 			warn("You must specify the MySQL login in order to use this plugin");
 			this.setEnabled(false);
 			return;

@@ -163,6 +163,9 @@ public class VsTransaction {
 	}
 	
 	protected static void saveLog() {
+		if (writer == null)
+			return;
+		
 		try {
 			writer.flush();
 			writer.close();
