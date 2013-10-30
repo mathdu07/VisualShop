@@ -108,7 +108,28 @@ public class MysqlShopSaver implements ShopSaver {
 	}
 
 	public boolean updateShop(Shop shop) {
-		// TODO Auto-generated method stub
+		if (shop == null)
+			return false;
+		
+		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_SELL_SHOP; // TODO Check shop type
+		
+		try {
+			PreparedStatement ps = conn.prepareStatement("UPDATE " + table + " SET price=?, itemstack=?, world=?, x=?, y=?, z=? WHERE uid=?");
+			Map<String, Object> data = shop.serialize();
+			ps.setString(7, (String) data.get("uid"));
+			ps.setDouble(1, (Double) data.get("price"));
+			ps.setBytes(2, serializeItemstack((ItemStack) data.get("item")));
+			ps.setString(3, (String) data.get("world"));
+			ps.setInt(4, (int) data.get("x"));
+			ps.setInt(5, (int) data.get("y"));
+			ps.setInt(6, (int) data.get("z"));
+			
+			boolean updated = ps.execute();
+			ps.close();
+			return updated;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
