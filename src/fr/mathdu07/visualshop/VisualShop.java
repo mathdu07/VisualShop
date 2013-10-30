@@ -1,6 +1,5 @@
 package fr.mathdu07.visualshop;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -16,6 +15,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import fr.mathdu07.visualshop.command.VsCommandExecutor;
 import fr.mathdu07.visualshop.config.Config;
+import fr.mathdu07.visualshop.config.MysqlShopSaver;
 import fr.mathdu07.visualshop.config.ShopSaver;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.listener.BlockListener;
@@ -48,17 +48,15 @@ public class VisualShop extends JavaPlugin {
 			Shop s = it.next();
 			s.despawnItem();
 		}
-		
-		try {
-			shopSaver.save();
-		} catch (IOException e) {e.printStackTrace();}
 
 		if (config.LOG_TRANSACTIONS.value)
 			VsTransaction.saveLog();
 		
-		Shop.removeShops();
+		if (shopSaver != null)
+			shopSaver.onDisable();
 		
-		task.cancel();
+		if (task != null)
+			task.cancel();
 	}
 
 	@Override
@@ -77,11 +75,18 @@ public class VisualShop extends JavaPlugin {
 			return;
 		}
 		
+		if (config.MYSQL_LOGIN.value.equals(config.MYSQL_LOGIN.defaultValue)) {
+			warn("You must specify the MySQL login in order to use this plugin");
+			this.setEnabled(false);
+			return;
+		}
+		
+		shopSaver = new MysqlShopSaver(config.MYSQL_HOST.value, config.MYSQL_LOGIN.value, config.MYSQL_PASSWORD.value, 
+				config.MYSQL_DATABASE.value, config.MYSQL_PORT.value);
+		
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(blockListener, this);
-		
-		shopSaver = new ShopSaver(this);
 		
 		command = new VsCommandExecutor();
 		getServer().getPluginCommand("visualshop").setExecutor(command);
@@ -90,6 +95,7 @@ public class VisualShop extends JavaPlugin {
 	}
 	
 	private void postEnable () {
+		shopSaver.onEnable();
 		task = getServer().getScheduler().runTaskTimer(this, new ShopTask(), 20l, config.UPDATE_DELTA.value * 20l);
 		if (config.LOG_TRANSACTIONS.value)
 			VsTransaction.startLog();
@@ -113,7 +119,7 @@ public class VisualShop extends JavaPlugin {
 		config.reload();
 		debug = config.DEBUG.value;
 		templates.reload();
-		shopSaver.reload();
+		shopSaver.reloadShops();
 		postEnable();
 	}
 	
@@ -154,6 +160,10 @@ public class VisualShop extends JavaPlugin {
 	
 	public static Templates getTemplates() {
 		return instance.templates;
+	}
+	
+	public static ShopSaver getShopSaver() {
+		return instance.shopSaver;
 	}
 	
 	public static VisualShop getInstance() {

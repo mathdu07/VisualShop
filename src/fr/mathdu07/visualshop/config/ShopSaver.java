@@ -1,46 +1,51 @@
 package fr.mathdu07.visualshop.config;
 
-import java.io.IOException;
-import java.util.Set;
-import java.util.Iterator;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-
 import fr.mathdu07.visualshop.Shop;
-import fr.mathdu07.visualshop.VisualShop;
 
-public class ShopSaver extends YamlConfig {
-
-	public ShopSaver(VisualShop plugin) {
-		super(plugin);
-		initConfig(plugin, "shops.yml");
-	}
-
-	@Override
-	protected void load() throws IOException, InvalidConfigurationException {
-		super.load();
-		
-		ConfigurationSection sec = config.getConfigurationSection("shop");
-		
-		if (sec != null) {
-			Set<String> keys = sec.getKeys(false);
-					
-			for (String key : keys) {
-				VisualShop.debug("Config key : " + key);
-				sec.get(key);
-			}
-		}
-	}
+public interface ShopSaver {
 	
-	@Override
-	public void save() throws IOException {
-		super.save();
-		
-		Iterator<Shop> it = Shop.getShops();
-		
-		for (int i = 0; it.hasNext(); i++)
-			config.set("shop." + i, it.next());
-	}
+	/**
+	 * Add the shop to the database
+	 * @param shop - the shop to add to the database
+	 * @return if it was successful
+	 */
+	public boolean addShop(Shop shop);
+	
+	/**
+	 * @param shop - the shop to add to the database
+	 * @return if the shops is present in the database
+	 */
+	public boolean isShopSaved(Shop shop);
+	
+	/**
+	 * Update the shop properties
+	 * @param shop
+	 * @return if it was successful
+	 */
+	public boolean updateShop(Shop shop);
+	
+	/**
+	 * Delete the shop from the database
+	 * @param shop
+	 * @return
+	 */
+	public boolean deleteShop(Shop shop);
+	
+	/**
+	 * Loads all the shops from the database
+	 * @return if the shops have could be loaded
+	 */
+	public boolean loadShops();
+	
+	/**
+	 * Removes all in-game shops and then
+	 * Loads all the shops from the database
+	 * @return if the shops have could be loaded
+	 */
+	public void reloadShops();
+	
+	public void onEnable();
+	
+	public void onDisable();
 
 }
