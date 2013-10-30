@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,7 @@ public class VsPlayer {
 	
 	private static Map<String, VsPlayer> players = new HashMap<>();
 	
-	private final Player bukkitPlayer;
+	private final String name;
 	
 	/**
 	 * The itemstack of the shop that the player would create
@@ -41,7 +42,11 @@ public class VsPlayer {
 	private Stack<VsTransaction> transactions;
 	
 	private VsPlayer(Player p) {
-		this.bukkitPlayer = p;
+		this(p.getName());
+	}
+	
+	private VsPlayer(String playerName) {
+		this.name = playerName;
 		this.transactions = new Stack<VsTransaction>();
 	}
 	
@@ -80,6 +85,7 @@ public class VsPlayer {
 	}
 	
 	public int undoTransactions(int transactionCount) {
+		Player bukkitPlayer = getBukkitPlayer();
 		
 		for (int i = 0; i < transactionCount; i++) {
 			
@@ -104,8 +110,15 @@ public class VsPlayer {
 		return transactionCount;
 	}
 	
+	/**
+	 * @return the name of the player
+	 */
+	public String getName() {
+		return name;
+	}
+	
 	public Player getBukkitPlayer() {
-		return bukkitPlayer;
+		return Bukkit.getPlayer(name);
 	}
 	
 	/**
