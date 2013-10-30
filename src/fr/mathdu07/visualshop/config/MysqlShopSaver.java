@@ -3,6 +3,7 @@ package fr.mathdu07.visualshop.config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
@@ -62,6 +63,20 @@ public class MysqlShopSaver implements ShopSaver {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	private void createTables() throws SQLException {
+		Statement st = conn.createStatement();
+		st.execute("CREATE TABLE IF NOT EXISTS " + VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + "admin_sell_shop ("
+				+ "id CHAR(36) NOT NULL,"
+				+ "price DOUBLE NOT NULL DEFAULT 0.0,"
+				+ "itemstack BLOB NOT NULL,"
+				+ "world VARCHAR(64) NOT NULL DEFAULT 'world',"
+				+ "x INT NOT NULL DEFAULT 0,"
+				+ "y INT NOT NULL DEFAULT 64,"
+				+ "z INT NOT NULL DEFAULT 0,"
+				+ "PRIMARY KEY (id)) ENGINE=INNODB;");
+		st.close();
+	}
 
 	@Override
 	public void onEnable() {
@@ -70,6 +85,7 @@ public class MysqlShopSaver implements ShopSaver {
 			long timestamp = System.currentTimeMillis();
 			conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + Integer.toString(port) + "/" + database, login, password);
 			VisualShop.info("Connection done in " + (System.currentTimeMillis() - timestamp) + " ms.");
+			createTables();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

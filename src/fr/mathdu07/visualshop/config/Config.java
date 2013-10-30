@@ -71,6 +71,11 @@ public class Config extends YamlConfig {
 	 * The database of the mysql server that the plugin use
 	 */
 	public final Property<String> MYSQL_DATABASE;
+	
+	/**
+	 * The prefix of the tables used by the plugin
+	 */
+	public final Property<String> MYSQL_TABLE_PREFIX;
 
 	public Config(VisualShop plugin) {
 		super(plugin);
@@ -88,6 +93,7 @@ public class Config extends YamlConfig {
 		properties.add(MYSQL_LOGIN = new Property<String>("mysql.user", "login_name"));
 		properties.add(MYSQL_PASSWORD = new Property<String>("mysql.password", "user_password"));
 		properties.add(MYSQL_DATABASE = new Property<String>("mysql.database", "minecraft"));
+		properties.add(MYSQL_TABLE_PREFIX = new Property<String>("mysql.table-prefix", "vs_"));
 		
 		initConfig(plugin, "config.yml");
 	}
