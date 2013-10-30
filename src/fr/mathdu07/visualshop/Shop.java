@@ -54,8 +54,7 @@ public class Shop implements ConfigurationSerializable {
 		
 		spawnItem();
 		updateItemPositionLater();
-		if (!VisualShop.getShopSaver().isShopSaved(this))
-			VisualShop.getShopSaver().addShop(this);
+		VisualShop.getShopSaver().addShop(this);
 		shops.add(this);
 		
 		VisualShop.debug("Creating shop " + this);

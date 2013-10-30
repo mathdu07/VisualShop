@@ -2,8 +2,10 @@ package fr.mathdu07.visualshop.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
 
 import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
@@ -34,7 +36,22 @@ public class MysqlShopSaver implements ShopSaver {
 	}
 
 	public boolean addShop(Shop shop) {
-		// TODO Auto-generated method stub
+		if (isShopSaved(shop))
+			return false;
+		
+		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + "admin_sell_shop"; // TODO Check shop type
+		Map<String, Object> data = shop.serialize();
+		
+		try {
+			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			boolean exec = st.execute("INSERT INTO " + table + " VALUES (" + //TODO Serialize itemstack
+					"'" + data.get("uid") + "'," + data.get("price") + ",'" + "WIP" + "','" + 
+					data.get("world") + "'," + data.get("x") + "," + data.get("y") + "," + data.get("z") + ");");
+			
+			return exec;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
@@ -44,7 +61,18 @@ public class MysqlShopSaver implements ShopSaver {
 	}
 
 	public boolean deleteShop(Shop shop) {
-		// TODO Auto-generated method stub
+		if (!isShopSaved(shop))
+			return false;
+		
+		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + "admin_sell_shop"; // TODO Check shop type
+		
+		try {
+			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			boolean deleted = st.execute("DELETE FROM " + table + " WHERE uid='" + shop.getUid() + "';");
+			return deleted;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 
@@ -60,21 +88,36 @@ public class MysqlShopSaver implements ShopSaver {
 	}
 
 	public boolean isShopSaved(Shop shop) {
-		// TODO Auto-generated method stub
-		return false;
+		if (shop == null)
+			return false;
+		
+		boolean exists = false;		
+		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + "admin_sell_shop";
+		//TODO Check shop type
+		
+		try {
+			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet result = st.executeQuery("SELECT * FROM " + table + " WHERE uid='" + shop.getUid() + "';");
+			exists = result.first();
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return exists;
 	}
 	
 	private void createTables() throws SQLException {
 		Statement st = conn.createStatement();
 		st.execute("CREATE TABLE IF NOT EXISTS " + VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + "admin_sell_shop ("
-				+ "id CHAR(36) NOT NULL,"
+				+ "uid CHAR(36) NOT NULL,"
 				+ "price DOUBLE NOT NULL DEFAULT 0.0,"
 				+ "itemstack BLOB NOT NULL,"
 				+ "world VARCHAR(64) NOT NULL DEFAULT 'world',"
 				+ "x INT NOT NULL DEFAULT 0,"
 				+ "y INT NOT NULL DEFAULT 64,"
 				+ "z INT NOT NULL DEFAULT 0,"
-				+ "PRIMARY KEY (id)) ENGINE=INNODB;");
+				+ "PRIMARY KEY (uid)) ENGINE=INNODB;");
 		st.close();
 	}
 
