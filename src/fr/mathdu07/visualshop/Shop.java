@@ -56,8 +56,6 @@ public class Shop implements ConfigurationSerializable {
 		updateItemPositionLater();
 		VisualShop.getShopSaver().addShop(this);
 		shops.add(this);
-		
-		VisualShop.debug("Creating shop " + this);
 	}
 	
 	private void updateItemPositionLater() {

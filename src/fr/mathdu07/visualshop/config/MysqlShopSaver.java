@@ -1,16 +1,29 @@
 package fr.mathdu07.visualshop.config;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+
+import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
 
 public class MysqlShopSaver implements ShopSaver {
+	
+	private static final String TABLE_ADMIN_SELL_SHOP = "admin_sell_shop";
 	
 	private final String host;
 	private final String login;
@@ -39,20 +52,59 @@ public class MysqlShopSaver implements ShopSaver {
 		if (isShopSaved(shop))
 			return false;
 		
-		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + "admin_sell_shop"; // TODO Check shop type
+		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_SELL_SHOP; // TODO Check shop type
 		Map<String, Object> data = shop.serialize();
 		
 		try {
-			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			boolean exec = st.execute("INSERT INTO " + table + " VALUES (" + //TODO Serialize itemstack
-					"'" + data.get("uid") + "'," + data.get("price") + ",'" + "WIP" + "','" + 
-					data.get("world") + "'," + data.get("x") + "," + data.get("y") + "," + data.get("z") + ");");
+			PreparedStatement ps = conn.prepareStatement("INSERT INTO " + table + " VALUES (?, ?, ?, ?, ?, ?, ?);");
+			ps.setString(1, (String) data.get("uid"));
+			ps.setDouble(2, (double) data.get("price"));
+			ps.setBytes(3, serializeItemstack((ItemStack) data.get("item")));
+			ps.setString(4, (String) data.get("world"));
+			ps.setInt(5, (int) data.get("x"));
+			ps.setInt(6, (int) data.get("y"));
+			ps.setInt(7, (int) data.get("z"));
 			
+			boolean exec = ps.execute();
+			ps.close();
 			return exec;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	private byte[] serializeItemstack(ItemStack is) {
+		Map<String, Object> data = is.serialize();
+		
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(data);
+			oos.close();
+			
+			byte[] output = baos.toByteArray();
+			return output;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	private ItemStack deserializeItemstack(byte[] array) {
+		
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new ByteArrayInputStream(array)));
+			Map<String, Object> data = (Map<String, Object>) ois.readObject();
+			ois.close();
+			
+			return ItemStack.deserialize(data);
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	public boolean updateShop(Shop shop) {
@@ -64,11 +116,12 @@ public class MysqlShopSaver implements ShopSaver {
 		if (!isShopSaved(shop))
 			return false;
 		
-		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + "admin_sell_shop"; // TODO Check shop type
+		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_SELL_SHOP; // TODO Check shop type
 		
 		try {
 			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			boolean deleted = st.execute("DELETE FROM " + table + " WHERE uid='" + shop.getUid() + "';");
+			st.close();
 			return deleted;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -77,8 +130,38 @@ public class MysqlShopSaver implements ShopSaver {
 	}
 
 	public boolean loadShops() {
-		// TODO Auto-generated method stub
+		try {
+			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			ResultSet adminSellShops = st.executeQuery("SELECT * FROM " + VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_SELL_SHOP);
+			loadAdminSellShop(adminSellShops);
+			
+			st.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return false;
+	}
+	
+	private void loadAdminSellShop(ResultSet result) throws SQLException {
+		while (result.next()) {
+			String uid = result.getString("uid");
+			double price = result.getDouble("price");
+			ItemStack is = deserializeItemstack(result.getBytes("itemstack"));
+			String world = result.getString("world");
+			int x = result.getInt("x"), y = result.getInt("y"), z = result.getInt("z");
+			
+			Map<String, Object> map = new HashMap<>(); 
+			map.put("uid", uid);
+			map.put("price", price);
+			map.put("item", is);
+			map.put("world", world);
+			map.put("x", x);
+			map.put("y", y);
+			map.put("z", z);
+			Shop.deserialize(map);
+		}
 	}
 
 	public void reloadShops() {
@@ -92,7 +175,7 @@ public class MysqlShopSaver implements ShopSaver {
 			return false;
 		
 		boolean exists = false;		
-		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + "admin_sell_shop";
+		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_SELL_SHOP;
 		//TODO Check shop type
 		
 		try {
@@ -109,7 +192,7 @@ public class MysqlShopSaver implements ShopSaver {
 	
 	private void createTables() throws SQLException {
 		Statement st = conn.createStatement();
-		st.execute("CREATE TABLE IF NOT EXISTS " + VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + "admin_sell_shop ("
+		st.execute("CREATE TABLE IF NOT EXISTS " + VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_SELL_SHOP + " ("
 				+ "uid CHAR(36) NOT NULL,"
 				+ "price DOUBLE NOT NULL DEFAULT 0.0,"
 				+ "itemstack BLOB NOT NULL,"
