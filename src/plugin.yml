@@ -20,8 +20,15 @@ permissions:
     default: op
     children:
       visualshop.admin.reload: true
+      visualshop.admin.toggle: true
   visualshop.admin.reload:
     description: Allow to reload the plugin configurations
+    default: op
+  visualshop.admin.toggle:
+    description: See the current toggled params or set its
+    default: op
+  visualshop.admin.toggle.advanced:
+    description: See if advanced is toggled, or set it
     default: op
   visualshop.common.*:
     description: Give all the common abilities

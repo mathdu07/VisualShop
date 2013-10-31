@@ -36,6 +36,7 @@ public class Templates extends YamlConfig {
 	public final Property<String> CMD_DELETE;
 	public final Property<String> CMD_RELOAD;
 	public final Property<String> CMD_UNDO;
+	public final Property<String> CMD_TOGGLE;
 	
 	public final Property<String> CONFIRMED_RELOAD;
 	public final Property<String> CONFIRMED_SHOP_CREATION;
@@ -43,6 +44,11 @@ public class Templates extends YamlConfig {
 	public final Property<String> CONFIRMED_TRANSACTION;
 	public final Property<String> CONFIRMED_UNDO;
 	public final Property<String> CONFIRMED_UNDOS;
+	
+	public final Property<String> TOGGLE_SEE;
+	public final Property<String> TOGGLE_CONFIRMED;
+	public final Property<String> TOGGLE_TRUE;
+	public final Property<String> TOGGLE_FALSE;
 	
 	public final Property<String> SHOP_SELL;
 	public final Property<String> SHOP_ADMIN;
@@ -52,6 +58,7 @@ public class Templates extends YamlConfig {
 	public final Property<String> SHOP_SIGN_4;
 	
 	public final Property<List<String>> SHOP_INFO;
+	public final Property<List<String>> SHOP_INFO_ADVANCED;
 
 	public Templates(VisualShop plugin) {
 		super(plugin);
@@ -85,6 +92,7 @@ public class Templates extends YamlConfig {
 		properties.add(CMD_DELETE = new Property<String>("command.delete", "Supprimer un commerce"));
 		properties.add(CMD_RELOAD = new Property<String>("command.reload", "Recharge le plugin"));
 		properties.add(CMD_UNDO = new Property<String>("command.undo", "Annuler une ou plusieurs transactions"));
+		properties.add(CMD_TOGGLE = new Property<String>("command.toggle", "Affiche les différents paramètres, et permet de les régler"));
 		
 		properties.add(CONFIRMED_RELOAD = new Property<String>("confirmed.reload", "&aVisualShop rechargé !"));
 		properties.add(CONFIRMED_SHOP_CREATION = new Property<String>("confirmed.shop-creation", "&aCommerce crée avec succès"));
@@ -92,6 +100,11 @@ public class Templates extends YamlConfig {
 		properties.add(CONFIRMED_TRANSACTION = new Property<String>("confirmed.transaction", "&aAchat de &7{AMOUNT}&a &9{ITEM}&a pour &6{PRICE}&a {$} réussi"));
 		properties.add(CONFIRMED_UNDO = new Property<String>("confirmed.undo", "&aVous avez annuler la transaction de &7{AMOUNT}&a &9{ITEM}&a pour &6{PRICE}&a {$}"));
 		properties.add(CONFIRMED_UNDOS = new Property<String>("confirmed.undos", "&aVous avez annulé les {NUMBER} dernières transactions"));
+		
+		properties.add(TOGGLE_SEE = new Property<String>("toggle.see-toggles", "Liste des options :"));
+		properties.add(TOGGLE_CONFIRMED = new Property<String>("toggle.confirmed", "&aL'option {TOGGLE} a été mis sur &9{VALUE}"));
+		properties.add(TOGGLE_TRUE = new Property<String>("toggle.true", "vrai"));
+		properties.add(TOGGLE_FALSE = new Property<String>("toggle.false", "faux"));
 		
 		properties.add(SHOP_SELL = new Property<String>("shop.sell", "Vente"));
 		properties.add(SHOP_ADMIN = new Property<String>("shop.admin-name", "Serveur"));
@@ -106,6 +119,14 @@ public class Templates extends YamlConfig {
 		shopInfos.add("Item : &e{ITEM}");
 		shopInfos.add("&7+-----------------------------------+");
 		properties.add(SHOP_INFO = new Property<List<String>>("shop.info", shopInfos));
+		
+		List<String> shopInfosAdv = new ArrayList<String>();
+		shopInfosAdv.add("&7+----------[&fShop Adv. mode&7]-----------+");
+		shopInfosAdv.add("UID : &e{UUID}");
+		shopInfosAdv.add("Prix à l'unité : &e{PRICE}");
+		shopInfosAdv.add("Item : &e{ITEM}");
+		shopInfosAdv.add("&7+-----------------------------------+");
+		properties.add(SHOP_INFO_ADVANCED = new Property<List<String>>("shop.info-advanced", shopInfosAdv));
 		
 		initConfig(plugin, "templates.yml");
 	}

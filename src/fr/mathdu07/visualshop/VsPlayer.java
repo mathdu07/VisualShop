@@ -39,6 +39,12 @@ public class VsPlayer {
 	 */
 	private boolean wouldDeleteShop = false;
 	
+	/**
+	 * If the player is in advanced mode
+	 * Used to display more info about shops (like uid)
+	 */
+	private boolean toggleAdvanced = false;
+	
 	private Stack<VsTransaction> transactions;
 	
 	private VsPlayer(Player p) {
@@ -119,6 +125,21 @@ public class VsPlayer {
 	
 	public Player getBukkitPlayer() {
 		return Bukkit.getPlayer(name);
+	}
+	
+	/**
+	 * @return if the player is in advanced mode
+	 */
+	public boolean toggleAdvanced() {
+		return toggleAdvanced;
+	}
+	
+	/**
+	 * Set if the player is in advanced mode
+	 * @param toggle - is in advanced mode
+	 */
+	public void toggleAdvanced(boolean toggle) {
+		this.toggleAdvanced = toggle;
 	}
 	
 	/**

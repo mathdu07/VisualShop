@@ -1,5 +1,7 @@
 package fr.mathdu07.visualshop.listener;
 
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
@@ -58,12 +60,15 @@ public class PlayerListener implements Listener {
 			} else if (Shop.getShopAt(b.getLocation()) != null) {
 				Shop shop = Shop.getShopAt(b.getLocation());
 				
+				List<String> infos = (vp.toggleAdvanced() ? VisualShop.getTemplates().SHOP_INFO_ADVANCED.value : VisualShop.getTemplates().SHOP_INFO.value);
 				p.sendMessage(Templates.listToArray(
 						Templates.replaceStrArray(
-						Templates.replaceStrArray(Templates.colorStrArray(VisualShop.getTemplates().SHOP_INFO.value),
+						Templates.replaceStrArray(
+						Templates.replaceStrArray(Templates.colorStrArray(infos),
 						"{PRICE}", Double.toString(shop.getPricePerUnit())),
-						"{ITEM}", shop.getItem().getType().toString())));
-				//p.sendMessage("Owner :");
+						"{ITEM}", shop.getItem().getType().toString()),
+						"{UUID}", shop.getUid().toString())));
+				
 				e.setCancelled(true);
 			}
 		} else if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {

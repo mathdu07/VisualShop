@@ -20,6 +20,7 @@ public class VsCommandExecutor implements CommandExecutor {
 		subCommands.add(new VsDeleteCommand());
 		subCommands.add(new VsReloadCommand());
 		subCommands.add(new VsUndoCommand());
+		subCommands.add(new VsToggleCommand());
 	}
 
 	public boolean onCommand(CommandSender send, Command cmd, String label, String[] args) {

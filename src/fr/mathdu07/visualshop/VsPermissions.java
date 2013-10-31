@@ -36,5 +36,15 @@ public class VsPermissions {
 	 * Allow to reload the plugin
 	 */
 	public static final String ADMIN_RELOAD = "visualshop.admin.reload"; 
+	
+	/**
+	 * See the current toggled params or set its
+	 */
+	public static final String ADMIN_TOGGLE = "visualshop.admin.toggle"; 
+	
+	/**
+	 * See if advanced is toggled, or set it
+	 */
+	public static final String ADMIN_TOGGLE_ADVANCED = "visualshop.admin.toggle.advanced";
 
 }
