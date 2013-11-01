@@ -60,6 +60,13 @@ public abstract class VsSubCommand {
 	protected abstract boolean onlyPlayer();
 	
 	/**
+	 * @return if the sub command need the permissions returned by <code>getPermissions()</code> to be executed
+	 * @see VsSubCommand#getPermission()
+	 */
+	protected boolean needPermission() {
+		return true;
+	}
+	/**
 	 * @return the usage of the sub command, displayed on help
 	 */
 	public String getUsage() {

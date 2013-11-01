@@ -14,6 +14,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsPermissions;
 import fr.mathdu07.visualshop.config.Templates;
+import fr.mathdu07.visualshop.shop.AdminShop;
 import fr.mathdu07.visualshop.shop.Shop;
 
 public class BlockListener implements Listener {
@@ -38,8 +39,9 @@ public class BlockListener implements Listener {
 		
 		Block b = e.getBlock();
 		
-		if (Shop.shopExistsAt(e.getBlockAgainst()) && b.getState() instanceof Sign
-				&& e.getPlayer().hasPermission(VsPermissions.COMMON_SIGN)) //TODO Check if the player own the shop
+		if (Shop.shopExistsAt(e.getBlockAgainst()) && b.getState() instanceof Sign && e.getPlayer().hasPermission(VsPermissions.COMMON_SIGN)
+				&& ((AdminShop.class.isInstance(Shop.getShop(e.getBlockAgainst())) && (e.getPlayer().hasPermission(VsPermissions.ADMIN_CREATE_SELL) || e.getPlayer().hasPermission(VsPermissions.ADMIN_CREATE_BUY))) 
+						/*TODO Add when it's a player shop || ()*/)) //TODO Check if the player own the shop
 			signsPlaced.put(b, Shop.getShop(e.getBlockAgainst()));
 		
 		if (Shop.shopExistsAt(b.getLocation().add(0, -1, 0).getBlock()))

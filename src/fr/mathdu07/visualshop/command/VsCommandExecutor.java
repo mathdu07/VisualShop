@@ -16,7 +16,7 @@ public class VsCommandExecutor implements CommandExecutor {
 	private List<VsSubCommand> subCommands = new ArrayList<VsSubCommand>();
 	
 	public VsCommandExecutor() {
-		subCommands.add(new VsCreateCommand());
+		subCommands.add(new VsAdminSellCommand());
 		subCommands.add(new VsDeleteCommand());
 		subCommands.add(new VsReloadCommand());
 		subCommands.add(new VsUndoCommand());

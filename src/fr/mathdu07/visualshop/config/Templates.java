@@ -9,6 +9,7 @@ public class Templates extends YamlConfig {
 	
 	public final Property<String> ERR_UNKNOWN_COMMAND;
 	public final Property<String> ERR_NOT_INTEGER;
+	public final Property<String> ERR_NOT_NUMERIC;
 	public final Property<String> ERR_BAD_USAGE;
 	public final Property<String> ERR_UNKNOWN_ITEM;
 	public final Property<String> ERR_ITEM_AIR;
@@ -32,7 +33,7 @@ public class Templates extends YamlConfig {
 	public final Property<String> HELP_PREFIX;
 	public final Property<String> HELP_SUFFIX;
 	
-	public final Property<String> CMD_CREATE;
+	public final Property<String> CMD_ADMIN_SELL;
 	public final Property<String> CMD_DELETE;
 	public final Property<String> CMD_RELOAD;
 	public final Property<String> CMD_UNDO;
@@ -65,6 +66,7 @@ public class Templates extends YamlConfig {
 		
 		properties.add(ERR_UNKNOWN_COMMAND = new Property<String>("error.unknown-command", "&4Sous-commande inconnue, tapez /{LABEL} help"));
 		properties.add(ERR_NOT_INTEGER = new Property<String>("error.not-integer", "&4{VALUE} n'est pas un entier"));
+		properties.add(ERR_NOT_NUMERIC = new Property<String>("error.not-numeric", "&4{VALUE} n'est pas un nombre"));
 		properties.add(ERR_BAD_USAGE = new Property<String>("error.bad-usage", "&4Mauvais usage, la syntaxe est : &f{USAGE}"));
 		properties.add(ERR_UNKNOWN_ITEM = new Property<String>("error.unknown-item", "&4Item inconnu : &o{ITEM}"));
 		properties.add(ERR_ITEM_AIR = new Property<String>("error.item-air", "&4Vous devez sélectionner un item autre que de l'air"));
@@ -88,7 +90,7 @@ public class Templates extends YamlConfig {
 		properties.add(HELP_PREFIX = new Property<String>("help.prefix", "&9---------------&f VisualShop Aide {PAGE}/{PAGE_MAX} &9------------------"));
 		properties.add(HELP_SUFFIX = new Property<String>("help.suffix", "&9--------------------------------------------------"));
 		
-		properties.add(CMD_CREATE = new Property<String>("command.create", "Créer un commerce"));
+		properties.add(CMD_ADMIN_SELL = new Property<String>("command.admin-sell", "Créer un commerce admin de vente"));
 		properties.add(CMD_DELETE = new Property<String>("command.delete", "Supprimer un commerce"));
 		properties.add(CMD_RELOAD = new Property<String>("command.reload", "Recharge le plugin"));
 		properties.add(CMD_UNDO = new Property<String>("command.undo", "Annuler une ou plusieurs transactions"));

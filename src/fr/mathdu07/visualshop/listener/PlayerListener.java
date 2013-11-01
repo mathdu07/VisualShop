@@ -74,7 +74,7 @@ public class PlayerListener implements Listener {
 		} else if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Block b = e.getClickedBlock();
 			
-			if (p.getItemInHand().getType().equals(Material.SIGN) && p.hasPermission(VsPermissions.COMMON_SIGN)) //TODO Check if the player own the shop
+			if (p.getItemInHand().getType().equals(Material.SIGN) && p.hasPermission(VsPermissions.COMMON_SIGN))
 				return;
 			
 			if (Shop.shopExistsAt(b)) {

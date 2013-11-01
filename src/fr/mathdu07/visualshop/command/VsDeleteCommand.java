@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import fr.mathdu07.visualshop.VisualShop;
-import fr.mathdu07.visualshop.VsPermissions;
 import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.config.Templates;
 
@@ -34,7 +33,7 @@ public class VsDeleteCommand extends VsSubCommand {
 
 	@Override
 	public String getPermission() {
-		return VsPermissions.COMMON_DELETE;
+		return "";
 	}
 
 	@Override
@@ -45,6 +44,11 @@ public class VsDeleteCommand extends VsSubCommand {
 	@Override
 	public String[] getAliases() {
 		return new String[] {"del", "remove", "rm"};
+	}
+
+	@Override
+	protected boolean needPermission() {
+		return false;
 	}
 
 }
