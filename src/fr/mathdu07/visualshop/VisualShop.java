@@ -1,6 +1,5 @@
 package fr.mathdu07.visualshop;
 
-import java.util.Iterator;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -21,6 +20,8 @@ import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.listener.BlockListener;
 import fr.mathdu07.visualshop.listener.EntityListener;
 import fr.mathdu07.visualshop.listener.PlayerListener;
+import fr.mathdu07.visualshop.shop.AdminSellShop;
+import fr.mathdu07.visualshop.shop.ShopTask;
 
 /**
  * Main Visual Shop's class
@@ -43,12 +44,6 @@ public class VisualShop extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		Iterator<Shop> it = Shop.getShops();
-		while (it.hasNext()) {
-			Shop s = it.next();
-			s.despawnItem();
-		}
-
 		if (config.LOG_TRANSACTIONS.value)
 			VsTransaction.saveLog();
 		
@@ -203,7 +198,7 @@ public class VisualShop extends JavaPlugin {
 	}
 	
 	static {
-		ConfigurationSerialization.registerClass(Shop.class);
+		ConfigurationSerialization.registerClass(AdminSellShop.class);
 	}
 
 }

@@ -16,12 +16,19 @@ import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
 import fr.mathdu07.visualshop.exception.VsNoItemInInventoryException;
 import fr.mathdu07.visualshop.exception.VsNullException;
 import fr.mathdu07.visualshop.exception.VsTooLateException;
+import fr.mathdu07.visualshop.shop.AdminSellShop;
+import fr.mathdu07.visualshop.shop.Shop;
 
 public class VsPlayer {
 	
 	private static Map<String, VsPlayer> players = new HashMap<>();
 	
 	private final String name;
+	
+	/**
+	 * The class that defines the type of shop the player would create
+	 */
+	private Class<? extends Shop> createShopClass = null;
 	
 	/**
 	 * The itemstack of the shop that the player would create
@@ -148,12 +155,13 @@ public class VsPlayer {
 	 * @param price - shop's price
 	 * @throws VsNegativeOrNullValueException if the price is smaller or equal to 0
 	 */
-	public void assignShopCreation(ItemStack is, double price) throws VsNegativeOrNullValueException {
+	public void assignAdminSellShopCreation(ItemStack is, double price) throws VsNegativeOrNullValueException {
 		if (price <= 0)
 			throw new VsNegativeOrNullValueException();
 		
 		this.createShopIS = is;
 		this.createShopPrice = price;
+		this.createShopClass = AdminSellShop.class;
 	}
 	
 	/**
@@ -171,7 +179,11 @@ public class VsPlayer {
 		Shop s = null;
 		
 		try {
-			s = new Shop(createShopPrice, createShopIS, b.getLocation());
+			if (createShopClass.equals(AdminSellShop.class))
+				s = new AdminSellShop(createShopPrice, createShopIS, b);
+			else
+				VisualShop.debug("Unknown shop class to create : " + createShopClass);
+				
 			this.createShopIS = null;
 			this.createShopPrice = 0.d;
 		} catch (VsNegativeOrNullValueException e) {e.printStackTrace();}

@@ -11,10 +11,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
-import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsPermissions;
 import fr.mathdu07.visualshop.config.Templates;
+import fr.mathdu07.visualshop.shop.Shop;
 
 public class BlockListener implements Listener {
 	
@@ -26,7 +26,7 @@ public class BlockListener implements Listener {
 		
 		Block b = e.getBlock();
 		
-		if (Shop.hasShopAt(b.getLocation())) {
+		if (Shop.shopExistsAt(b)) {
 			e.getPlayer().sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_BREAK_SHOP.value));
 			e.setCancelled(true);
 		}
@@ -38,11 +38,11 @@ public class BlockListener implements Listener {
 		
 		Block b = e.getBlock();
 		
-		if (Shop.hasShopAt(e.getBlockAgainst().getLocation()) && b.getState() instanceof Sign
+		if (Shop.shopExistsAt(e.getBlockAgainst()) && b.getState() instanceof Sign
 				&& e.getPlayer().hasPermission(VsPermissions.COMMON_SIGN)) //TODO Check if the player own the shop
-			signsPlaced.put(b, Shop.getShopAt(e.getBlockAgainst().getLocation()));
+			signsPlaced.put(b, Shop.getShop(e.getBlockAgainst()));
 		
-		if (Shop.hasShopAt(b.getWorld(), b.getX(), b.getY() - 1, b.getZ()))
+		if (Shop.shopExistsAt(b.getLocation().add(0, -1, 0).getBlock()))
 			e.setCancelled(true);
 	}
 	

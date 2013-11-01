@@ -1,4 +1,4 @@
-package fr.mathdu07.visualshop;
+package fr.mathdu07.visualshop.shop;
 
 import java.util.Iterator;
 

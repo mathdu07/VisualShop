@@ -13,12 +13,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.util.Vector;
 
-import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsPermissions;
 import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.VsTransaction;
 import fr.mathdu07.visualshop.config.Templates;
+import fr.mathdu07.visualshop.shop.Shop;
 
 public class PlayerListener implements Listener {
 	
@@ -34,7 +34,7 @@ public class PlayerListener implements Listener {
 			
 			if (vp.shouldCreateShop()) {
 				
-				if (Shop.getShopAt(b.getLocation()) == null && b.getWorld().getBlockAt(b.getLocation().add(new Vector(0, 1, 0))).getType().equals(Material.AIR)) {
+				if (!Shop.shopExistsAt(b) && b.getLocation().add(0, 1, 0).getBlock().getType().equals(Material.AIR)) {
 					Shop shop = vp.createShop(b);
 					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_SHOP_CREATION.value));
 					
@@ -47,8 +47,8 @@ public class PlayerListener implements Listener {
 				e.setCancelled(true);
 			} else if (vp.shouldDeleteShop()) {
 				
-				if (Shop.hasShopAt(b.getLocation())) {
-					Shop.deleteShop(b.getLocation());
+				if (Shop.shopExistsAt(b)) {
+					Shop.getShop(b).delete();
 					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_SHOP_DESTRUCTION.value));
 					vp.setWouldDeleteShop(false);
 					
@@ -57,8 +57,8 @@ public class PlayerListener implements Listener {
 				
 				e.setCancelled(true);
 				
-			} else if (Shop.getShopAt(b.getLocation()) != null) {
-				Shop shop = Shop.getShopAt(b.getLocation());
+			} else if (Shop.shopExistsAt(b)) {
+				Shop shop = Shop.getShop(b);
 				
 				List<String> infos = (vp.toggleAdvanced() ? VisualShop.getTemplates().SHOP_INFO_ADVANCED.value : VisualShop.getTemplates().SHOP_INFO.value);
 				p.sendMessage(Templates.listToArray(
@@ -67,7 +67,7 @@ public class PlayerListener implements Listener {
 						Templates.replaceStrArray(Templates.colorStrArray(infos),
 						"{PRICE}", Double.toString(shop.getPricePerUnit())),
 						"{ITEM}", shop.getItem().getType().toString()),
-						"{UUID}", shop.getUid().toString())));
+						"{UUID}", shop.getUUID().toString())));
 				
 				e.setCancelled(true);
 			}
@@ -77,9 +77,9 @@ public class PlayerListener implements Listener {
 			if (p.getItemInHand().getType().equals(Material.SIGN) && p.hasPermission(VsPermissions.COMMON_SIGN)) //TODO Check if the player own the shop
 				return;
 			
-			if (Shop.hasShopAt(b.getLocation())) {
+			if (Shop.shopExistsAt(b)) {
 				
-				Shop shop = Shop.getShopAt(b.getLocation());
+				Shop shop = Shop.getShop(b);
 				int amount = 1;
 				VsTransaction transaction = new VsTransaction(shop, amount, vp);
 				transaction.applyTransaction();
@@ -95,7 +95,7 @@ public class PlayerListener implements Listener {
 		
 		final Item i = e.getItem();
 		
-		if (Shop.isItemOwnedToAShop(i)) {
+		if (Shop.shopOwnsItem(i)) {
 			e.setCancelled(true);
 			i.setPickupDelay(2000);
 		}

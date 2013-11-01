@@ -16,6 +16,8 @@ import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsEconomyException;
 import fr.mathdu07.visualshop.exception.VsNoItemInInventoryException;
 import fr.mathdu07.visualshop.exception.VsTooLateException;
+import fr.mathdu07.visualshop.shop.SellShop;
+import fr.mathdu07.visualshop.shop.Shop;
 
 public class VsTransaction {
 	
@@ -41,7 +43,7 @@ public class VsTransaction {
 		is.setAmount(amount);
 		this.cost = shop.getPricePerUnit() * amount;
 		this.player = player;
-		this.buying = true;
+		this.buying = (SellShop.class.isInstance(shop));
 		timestamp = System.currentTimeMillis();
 	}
 	
@@ -54,12 +56,12 @@ public class VsTransaction {
 		final Economy eco = VisualShop.getInstance().getEconomy();
 		final Player p = player.getBukkitPlayer();
 		
+		if (!p.hasPermission(VsPermissions.COMMON_USE)) {
+			p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_PERMISSION.value));
+			return false;
+		}
+		
 		if (buying) {
-			
-			if (!p.hasPermission(VsPermissions.COMMON_USE)) {
-				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_PERMISSION.value));
-				return false;
-			}
 			
 			if (eco.has(p.getName(), cost)) {
 				Map<Integer, ItemStack> exceed = p.getInventory().addItem(is);
@@ -100,6 +102,7 @@ public class VsTransaction {
 			return false;
 			
 		} else {
+			VisualShop.debug("Sell transaction not implemented yet");
 			//TODO Support sell transaction
 			return false;
 		}
@@ -141,6 +144,7 @@ public class VsTransaction {
 			}
 			
 		} else {
+			VisualShop.debug("Sell transaction not implemented yet");
 			//TODO Support undo sell transaction
 		}
 	}

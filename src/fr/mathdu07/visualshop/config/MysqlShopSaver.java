@@ -17,8 +17,9 @@ import java.util.Map;
 
 import org.bukkit.inventory.ItemStack;
 
-import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.shop.AdminSellShop;
+import fr.mathdu07.visualshop.shop.Shop;
 
 public class MysqlShopSaver implements ShopSaver {
 	
@@ -140,7 +141,7 @@ public class MysqlShopSaver implements ShopSaver {
 		
 		try {
 			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			boolean deleted = st.execute("DELETE FROM " + table + " WHERE uid='" + shop.getUid() + "';");
+			boolean deleted = st.execute("DELETE FROM " + table + " WHERE uid='" + shop.getUUID() + "';");
 			st.close();
 			return deleted;
 		} catch (SQLException e) {
@@ -180,12 +181,12 @@ public class MysqlShopSaver implements ShopSaver {
 			map.put("x", x);
 			map.put("y", y);
 			map.put("z", z);
-			Shop.deserialize(map);
+			AdminSellShop.deserialize(map);
 		}
 	}
 
 	public void reloadShops() {
-		Shop.removeShops();
+		Shop.clearShopList();
 		if (!loadShops())
 			VisualShop.severe("Can't load shops from MySQL after plugin reloading");
 	}
@@ -200,7 +201,7 @@ public class MysqlShopSaver implements ShopSaver {
 		
 		try {
 			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			ResultSet result = st.executeQuery("SELECT * FROM " + table + " WHERE uid='" + shop.getUid() + "';");
+			ResultSet result = st.executeQuery("SELECT * FROM " + table + " WHERE uid='" + shop.getUUID() + "';");
 			exists = result.first();
 			st.close();
 		} catch (SQLException e) {
@@ -243,7 +244,7 @@ public class MysqlShopSaver implements ShopSaver {
 
 	@Override
 	public void onDisable() {
-		Shop.removeShops();
+		Shop.clearShopList();
 		
 		try {
 			VisualShop.info("Disconnect from MySQL server");

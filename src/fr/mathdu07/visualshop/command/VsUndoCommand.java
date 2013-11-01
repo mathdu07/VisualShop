@@ -26,7 +26,7 @@ public class VsUndoCommand extends VsSubCommand {
 				vp.undoLastTransaction();
 				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_UNDO.value).replace("{AMOUNT}", Integer.toString(t.is.getAmount())).
 						replace("{ITEM}", t.is.getType().toString()).replace("{PRICE}", Double.toString(t.cost)).
-						replace("{$}", VisualShop.getInstance().getEconomy().currencyNameSingular()));
+						replace("{$}", VisualShop.getInstance().getEconomy().currencyNamePlural()));
 			} catch (VsTooLateException e) {
 				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_UNDO_TOO_LATE.value).replace("{TIME}", Integer.toString(VisualShop.getVSConfig().UNDO_MAX_TIME.value)));
 			} catch (VsNoItemInInventoryException e) {
