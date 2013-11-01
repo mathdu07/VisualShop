@@ -15,7 +15,7 @@ public abstract class VsSubCommand {
 			return;
 		}
 		
-		if (!sender.hasPermission(getPermission())){
+		if (!sender.hasPermission(getPermission()) && needPermission()){
 			sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_PERMISSION.value));
 			return;
 		}

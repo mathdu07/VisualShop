@@ -18,6 +18,7 @@ import fr.mathdu07.visualshop.VsPermissions;
 import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.VsTransaction;
 import fr.mathdu07.visualshop.config.Templates;
+import fr.mathdu07.visualshop.shop.AdminShop;
 import fr.mathdu07.visualshop.shop.Shop;
 
 public class PlayerListener implements Listener {
@@ -48,6 +49,15 @@ public class PlayerListener implements Listener {
 			} else if (vp.shouldDeleteShop()) {
 				
 				if (Shop.shopExistsAt(b)) {
+					
+					if (AdminShop.class.isInstance(Shop.getShop(b)) && !p.hasPermission(VsPermissions.ADMIN_DELETE)) {
+						p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_PERMISSION.value));
+						vp.setWouldDeleteShop(false);
+						return;
+					}
+					
+					//TODO Check when it's a player shop
+					
 					Shop.getShop(b).delete();
 					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_SHOP_DESTRUCTION.value));
 					vp.setWouldDeleteShop(false);
