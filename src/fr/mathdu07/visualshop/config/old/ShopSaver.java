@@ -7,7 +7,7 @@ import java.util.Iterator;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 
-import fr.mathdu07.visualshop.Shop;
+import fr.mathdu07.visualshop.shop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.config.YamlConfig;
 

@@ -15,7 +15,7 @@ public abstract class VsSubCommand {
 			return;
 		}
 		
-		if (!sender.hasPermission(getPermission())){
+		if (!sender.hasPermission(getPermission()) && needPermission()){
 			sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_PERMISSION.value));
 			return;
 		}
@@ -59,6 +59,13 @@ public abstract class VsSubCommand {
 	 */
 	protected abstract boolean onlyPlayer();
 	
+	/**
+	 * @return if the sub command need the permissions returned by <code>getPermissions()</code> to be executed
+	 * @see VsSubCommand#getPermission()
+	 */
+	protected boolean needPermission() {
+		return true;
+	}
 	/**
 	 * @return the usage of the sub command, displayed on help
 	 */

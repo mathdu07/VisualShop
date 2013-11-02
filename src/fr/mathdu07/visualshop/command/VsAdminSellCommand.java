@@ -10,8 +10,9 @@ import fr.mathdu07.visualshop.VsPermissions;
 import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
+import fr.mathdu07.visualshop.util.VsItemStack;
 
-public class VsCreateCommand extends VsSubCommand {
+public class VsAdminSellCommand extends VsSubCommand {
 
 	@Override
 	public void performCommand(CommandSender sender, String[] args) {
@@ -20,34 +21,22 @@ public class VsCreateCommand extends VsSubCommand {
 			return;
 		}
 		
-		Player player = (Player) sender;
+		VsPlayer p = VsPlayer.getPlayer((Player) sender);
+		
 		try {
 			double price = Double.parseDouble(args[0]);
 			ItemStack is;
 			
 			if (args.length >= 2) {
+				is = VsItemStack.parseItemStack(args[1]);
 				
-				if (args[1].matches("^[0-9]+(:[0-9]+)?$")) {
-					
-					 if (args[1].contains(":")) {
-						 String[] datas = args[1].split(":");
-						 int id = Integer.parseInt(datas[0]), metadata = Integer.parseInt(datas[1]);
-						 is = new ItemStack(id, 1, (short) metadata);
-					 } else
-						 is = new ItemStack(Integer.parseInt(args[1]), 1);
-				} else {
-					Material material = Material.getMaterial(args[1].toUpperCase());
-					
-					if (material != null)
-						is = new ItemStack(material);
-					else {
-						sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_UNKNOWN_ITEM.value).replace("{ITEM}", args[1]));
-						return;
-					}
+				if (is == null) {
+					sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_UNKNOWN_ITEM.value).replace("{ITEM}", args[1]));
+					return;
 				}
 				
 			} else {
-				is = player.getItemInHand().clone();
+				is = p.getBukkitPlayer().getItemInHand().clone();
 				is.setAmount(1);
 			}
 			
@@ -56,17 +45,15 @@ public class VsCreateCommand extends VsSubCommand {
 				return;
 			}
 			
-			
 			try {
-				VsPlayer.getPlayer(player).assignShopCreation(is, price);
+				p.assignAdminSellShopCreation(is, price);
 				sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().DIV_CREATE_SHOP.value));
 			} catch (VsNegativeOrNullValueException e) {
 				sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NUMBER_NEGATIVE.value));
 			}
 			
-			
 		} catch (NumberFormatException e) {
-			sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_INTEGER.value).replace("{VALUE}", args[0]));
+			sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_NUMERIC.value).replace("{VALUE}", args[0]));
 		}
 	}
 
@@ -76,28 +63,29 @@ public class VsCreateCommand extends VsSubCommand {
 	}
 
 	@Override
-	public String getUsage() {
-		return super.getUsage() + " <price> {item}";
-	}
-
-	@Override
 	public String getDescription() {
-		return Templates.colorStr(VisualShop.getTemplates().CMD_CREATE.value);
+		return Templates.colorStr(VisualShop.getTemplates().CMD_ADMIN_SELL.value);
 	}
 
 	@Override
 	public String getPermission() {
-		return VsPermissions.COMMON_CREATE;
+		return VsPermissions.ADMIN_CREATE_SELL;
 	}
 
 	@Override
 	public String getName() {
-		return "create";
+		return "adminsell";
 	}
 
 	@Override
 	public String[] getAliases() {
-		return null;
+		return new String[] {"asell", "as"};
+	}
+
+
+	@Override
+	public String getUsage() {
+		return super.getUsage() + " <price> {item}";
 	}
 
 }

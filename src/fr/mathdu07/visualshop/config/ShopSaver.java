@@ -1,6 +1,6 @@
 package fr.mathdu07.visualshop.config;
 
-import fr.mathdu07.visualshop.Shop;
+import fr.mathdu07.visualshop.shop.Shop;
 
 public interface ShopSaver {
 	

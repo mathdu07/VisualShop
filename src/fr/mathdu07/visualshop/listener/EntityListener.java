@@ -9,8 +9,8 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 
-import fr.mathdu07.visualshop.Shop;
 import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.shop.Shop;
 
 public class EntityListener implements Listener {
 	
@@ -20,7 +20,7 @@ public class EntityListener implements Listener {
 		
 		Block b = e.getBlock();
 		
-		if (Shop.hasShopAt(b.getLocation()) && VisualShop.getVSConfig().PROTECT_SHOPS.value)
+		if (Shop.shopExistsAt(b) && VisualShop.getVSConfig().PROTECT_SHOPS.value)
 			e.setCancelled(true);
 		
 	}
@@ -34,13 +34,13 @@ public class EntityListener implements Listener {
 			List<Block> blocks = e.blockList();
 			for (int i = 0; i < blocks.size(); i++) {
 				
-				if (Shop.hasShopAt(blocks.get(i).getLocation())) {
+				if (Shop.shopExistsAt(blocks.get(i))) {
 					if (VisualShop.getVSConfig().PROTECT_SHOPS.value) {
 						e.setCancelled(true);
 						break;
 					}
 					else
-						Shop.deleteShop(blocks.get(i).getLocation());
+						Shop.getShop(blocks.get(i)).delete();
 				}
 			}
 		}
@@ -50,7 +50,7 @@ public class EntityListener implements Listener {
 	public void onItemDespawn (ItemDespawnEvent e) {
 		if (e == null)	return;
 		
-		if (Shop.isItemOwnedToAShop(e.getEntity()))
+		if (Shop.shopOwnsItem(e.getEntity()))
 			e.setCancelled(true);
 	}
 
