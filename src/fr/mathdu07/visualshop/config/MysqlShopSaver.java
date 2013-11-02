@@ -18,12 +18,14 @@ import java.util.Map;
 import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.shop.AdminBuyShop;
 import fr.mathdu07.visualshop.shop.AdminSellShop;
 import fr.mathdu07.visualshop.shop.Shop;
 
 public class MysqlShopSaver implements ShopSaver {
 	
 	private static final String TABLE_ADMIN_SELL_SHOP = "admin_sell_shop";
+	private static final String TABLE_ADMIN_BUY_SHOP = "admin_buy_shop";
 	
 	private final String host;
 	private final String login;
@@ -52,7 +54,17 @@ public class MysqlShopSaver implements ShopSaver {
 		if (isShopSaved(shop))
 			return false;
 		
-		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_SELL_SHOP; // TODO Check shop type
+		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value;
+		
+		if (AdminSellShop.class.isInstance(shop))
+			table += TABLE_ADMIN_SELL_SHOP; // TODO Check shop type
+		else if (AdminBuyShop.class.isInstance(shop))
+			table += TABLE_ADMIN_BUY_SHOP;
+		else {
+			VisualShop.debug("Trying to add an unknown shop class : " + shop.getClass());
+			return false;
+		}
+		
 		Map<String, Object> data = shop.serialize();
 		
 		try {
@@ -111,7 +123,15 @@ public class MysqlShopSaver implements ShopSaver {
 		if (shop == null)
 			return false;
 		
-		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_SELL_SHOP; // TODO Check shop type
+		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value;
+		if (AdminSellShop.class.isInstance(shop))
+			table += TABLE_ADMIN_SELL_SHOP; // TODO Check shop type
+		else if (AdminBuyShop.class.isInstance(shop))
+			table += TABLE_ADMIN_BUY_SHOP;
+		else {
+			VisualShop.debug("Trying to update an unknown shop class : " + shop.getClass());
+			return false;
+		}
 		
 		try {
 			PreparedStatement ps = conn.prepareStatement("UPDATE " + table + " SET price=?, itemstack=?, world=?, x=?, y=?, z=? WHERE uid=?");
@@ -137,7 +157,15 @@ public class MysqlShopSaver implements ShopSaver {
 		if (!isShopSaved(shop))
 			return false;
 		
-		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_SELL_SHOP; // TODO Check shop type
+		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value;
+		if (AdminSellShop.class.isInstance(shop))
+			table += TABLE_ADMIN_SELL_SHOP; // TODO Check shop type
+		else if (AdminBuyShop.class.isInstance(shop))
+			table += TABLE_ADMIN_BUY_SHOP;
+		else {
+			VisualShop.debug("Trying to add an unknown shop class : " + shop.getClass());
+			return false;
+		}
 		
 		try {
 			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -155,6 +183,9 @@ public class MysqlShopSaver implements ShopSaver {
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			ResultSet adminSellShops = st.executeQuery("SELECT * FROM " + VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_SELL_SHOP);
 			loadAdminSellShop(adminSellShops);
+			
+			ResultSet adminBuyShops = st.executeQuery("SELECT * FROM " + VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_BUY_SHOP);
+			loadAdminBuyShop(adminBuyShops);
 			
 			st.close();
 			return true;
@@ -184,6 +215,26 @@ public class MysqlShopSaver implements ShopSaver {
 			AdminSellShop.deserialize(map);
 		}
 	}
+	
+	private void loadAdminBuyShop(ResultSet result) throws SQLException {
+		while (result.next()) {
+			String uid = result.getString("uid");
+			double price = result.getDouble("price");
+			ItemStack is = deserializeItemstack(result.getBytes("itemstack"));
+			String world = result.getString("world");
+			int x = result.getInt("x"), y = result.getInt("y"), z = result.getInt("z");
+			
+			Map<String, Object> map = new HashMap<>(); 
+			map.put("uid", uid);
+			map.put("price", price);
+			map.put("item", is);
+			map.put("world", world);
+			map.put("x", x);
+			map.put("y", y);
+			map.put("z", z);
+			AdminBuyShop.deserialize(map);
+		}
+	}
 
 	public void reloadShops() {
 		Shop.clearShopList();
@@ -196,8 +247,16 @@ public class MysqlShopSaver implements ShopSaver {
 			return false;
 		
 		boolean exists = false;		
-		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_SELL_SHOP;
-		//TODO Check shop type
+		
+		String table = VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value;
+		if (AdminSellShop.class.isInstance(shop))
+			table += TABLE_ADMIN_SELL_SHOP; // TODO Check shop type
+		else if (AdminBuyShop.class.isInstance(shop))
+			table += TABLE_ADMIN_BUY_SHOP;
+		else {
+			VisualShop.debug("Trying to add an unknown shop class : " + shop.getClass());
+			return false;
+		}
 		
 		try {
 			Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -222,6 +281,17 @@ public class MysqlShopSaver implements ShopSaver {
 				+ "y INT NOT NULL DEFAULT 64,"
 				+ "z INT NOT NULL DEFAULT 0,"
 				+ "PRIMARY KEY (uid)) ENGINE=INNODB;");
+		
+		st.execute("CREATE TABLE IF NOT EXISTS " + VisualShop.getVSConfig().MYSQL_TABLE_PREFIX.value + TABLE_ADMIN_BUY_SHOP + " ("
+				+ "uid CHAR(36) NOT NULL,"
+				+ "price DOUBLE NOT NULL DEFAULT 0.0,"
+				+ "itemstack BLOB NOT NULL,"
+				+ "world VARCHAR(64) NOT NULL DEFAULT 'world',"
+				+ "x INT NOT NULL DEFAULT 0,"
+				+ "y INT NOT NULL DEFAULT 64,"
+				+ "z INT NOT NULL DEFAULT 0,"
+				+ "PRIMARY KEY (uid)) ENGINE=INNODB;");
+		
 		st.close();
 	}
 

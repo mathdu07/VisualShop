@@ -12,10 +12,13 @@ import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsEconomyException;
+import fr.mathdu07.visualshop.exception.VsInventoryFullException;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
 import fr.mathdu07.visualshop.exception.VsNoItemInInventoryException;
+import fr.mathdu07.visualshop.exception.VsNotEnoughMoneyException;
 import fr.mathdu07.visualshop.exception.VsNullException;
 import fr.mathdu07.visualshop.exception.VsTooLateException;
+import fr.mathdu07.visualshop.shop.AdminBuyShop;
 import fr.mathdu07.visualshop.shop.AdminSellShop;
 import fr.mathdu07.visualshop.shop.Shop;
 
@@ -85,8 +88,10 @@ public class VsPlayer {
 	 * @throws VsNoItemInInventoryException
 	 * @throws VsEconomyException
 	 * @return the transaction undone
+	 * @throws VsNotEnoughMoneyException 
+	 * @throws VsInventoryFullException 
 	 */
-	public VsTransaction undoLastTransaction() throws VsTooLateException, VsNoItemInInventoryException, VsEconomyException, VsNullException {
+	public VsTransaction undoLastTransaction() throws VsTooLateException, VsNoItemInInventoryException, VsEconomyException, VsNullException, VsInventoryFullException, VsNotEnoughMoneyException {
 		try {
 			VsTransaction trans = transactions.peek();
 			trans.undoTransation();
@@ -116,6 +121,12 @@ public class VsPlayer {
 				return i;
 			} catch (VsNullException e) {
 				bukkitPlayer.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOTHING_UNDO.value));
+				return i;
+			} catch (VsInventoryFullException e) {
+				bukkitPlayer.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_INV_FULL.value));
+				return i;
+			} catch (VsNotEnoughMoneyException e) {
+				bukkitPlayer.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_ENOUGH_MONEY.value).replace("{PRICE}", Double.toString(e.moneyRequired)));
 				return i;
 			}
 		}
@@ -150,7 +161,7 @@ public class VsPlayer {
 	}
 	
 	/**
-	 * Assign a shop to the player 
+	 * Assign an admin sell shop to the player 
 	 * @param is - shop's itemstack
 	 * @param price - shop's price
 	 * @throws VsNegativeOrNullValueException if the price is smaller or equal to 0
@@ -162,6 +173,21 @@ public class VsPlayer {
 		this.createShopIS = is;
 		this.createShopPrice = price;
 		this.createShopClass = AdminSellShop.class;
+	}
+	
+	/**
+	 * Assign an amdin buy shop to the player 
+	 * @param is - shop's itemstack
+	 * @param price - shop's price
+	 * @throws VsNegativeOrNullValueException if the price is smaller or equal to 0
+	 */
+	public void assignAdminBuyShopCreation(ItemStack is, double price) throws VsNegativeOrNullValueException {
+		if (price <= 0)
+			throw new VsNegativeOrNullValueException();
+		
+		this.createShopIS = is;
+		this.createShopPrice = price;
+		this.createShopClass = AdminBuyShop.class;
 	}
 	
 	/**
@@ -181,6 +207,8 @@ public class VsPlayer {
 		try {
 			if (createShopClass.equals(AdminSellShop.class))
 				s = new AdminSellShop(createShopPrice, createShopIS, b);
+			else if (createShopClass.equals(AdminBuyShop.class))
+				s = new AdminBuyShop(createShopPrice, createShopIS, b);
 			else
 				VisualShop.debug("Unknown shop class to create : " + createShopClass);
 				

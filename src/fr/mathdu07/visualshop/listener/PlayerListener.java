@@ -19,6 +19,7 @@ import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.VsTransaction;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.shop.AdminShop;
+import fr.mathdu07.visualshop.shop.SellShop;
 import fr.mathdu07.visualshop.shop.Shop;
 
 public class PlayerListener implements Listener {
@@ -74,10 +75,14 @@ public class PlayerListener implements Listener {
 				p.sendMessage(Templates.listToArray(
 						Templates.replaceStrArray(
 						Templates.replaceStrArray(
+						Templates.replaceStrArray(
+						Templates.replaceStrArray(		
 						Templates.replaceStrArray(Templates.colorStrArray(infos),
 						"{PRICE}", Double.toString(shop.getPricePerUnit())),
 						"{ITEM}", shop.getItem().getType().toString()),
-						"{UUID}", shop.getUUID().toString())));
+						"{UUID}", shop.getUUID().toString()),
+						"{OWNER}", VisualShop.getTemplates().SHOP_ADMIN.value), //TODO Check if it's a player shop
+						"{TYPE}", (SellShop.class.isInstance(shop) ? VisualShop.getTemplates().SHOP_SELL.value : VisualShop.getTemplates().SHOP_BUY.value))));
 				
 				e.setCancelled(true);
 			}

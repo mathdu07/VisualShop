@@ -22,6 +22,7 @@ public class Templates extends YamlConfig {
 	public final Property<String> ERR_SHOP_MISSING;
 	public final Property<String> ERR_INV_FULL;
 	public final Property<String> ERR_BUY_ECO;
+	public final Property<String> ERR_SELL_ECO;
 	public final Property<String> ERR_NOT_ENOUGH_MONEY;
 	public final Property<String> ERR_INV_NO_ITEM;
 	public final Property<String> ERR_UNDO_TOO_LATE;
@@ -34,6 +35,7 @@ public class Templates extends YamlConfig {
 	public final Property<String> HELP_SUFFIX;
 	
 	public final Property<String> CMD_ADMIN_SELL;
+	public final Property<String> CMD_ADMIN_BUY;
 	public final Property<String> CMD_DELETE;
 	public final Property<String> CMD_RELOAD;
 	public final Property<String> CMD_UNDO;
@@ -42,7 +44,8 @@ public class Templates extends YamlConfig {
 	public final Property<String> CONFIRMED_RELOAD;
 	public final Property<String> CONFIRMED_SHOP_CREATION;
 	public final Property<String> CONFIRMED_SHOP_DESTRUCTION;
-	public final Property<String> CONFIRMED_TRANSACTION;
+	public final Property<String> CONFIRMED_TRANSACTION_BUY;
+	public final Property<String> CONFIRMED_TRANSACTION_SELL;
 	public final Property<String> CONFIRMED_UNDO;
 	public final Property<String> CONFIRMED_UNDOS;
 	
@@ -52,6 +55,7 @@ public class Templates extends YamlConfig {
 	public final Property<String> TOGGLE_FALSE;
 	
 	public final Property<String> SHOP_SELL;
+	public final Property<String> SHOP_BUY;
 	public final Property<String> SHOP_ADMIN;
 	public final Property<String> SHOP_SIGN_1;
 	public final Property<String> SHOP_SIGN_2;
@@ -79,6 +83,7 @@ public class Templates extends YamlConfig {
 		properties.add(ERR_SHOP_MISSING = new Property<String>("error.shop-missing", "&4Il n'y a pas de commerce ici"));
 		properties.add(ERR_INV_FULL = new Property<String>("error.inventory-full", "&4Votre inventaire est complet, achat non pris en compte"));
 		properties.add(ERR_BUY_ECO = new Property<String>("error.buy-economy", "&cErreur lors de l'achat : &4{ERROR}&c"));
+		properties.add(ERR_SELL_ECO = new Property<String>("error.sell-economy", "&cErreur lors de la vente : &4{ERROR}&c"));
 		properties.add(ERR_NOT_ENOUGH_MONEY = new Property<String>("error.not-enough-money", "&4Vous n'avez pas assez d'argent (Cout : &c{PRICE}&4)"));
 		properties.add(ERR_INV_NO_ITEM = new Property<String>("error.inventory-no-item", "&4Vous n'avez pas de {ITEM} dans votre inventaire"));
 		properties.add(ERR_UNDO_TOO_LATE = new Property<String>("error.undo-too-late", "&4Vous ne pouvez annuler une transaction datant de plus de {TIME} secondes"));
@@ -91,6 +96,7 @@ public class Templates extends YamlConfig {
 		properties.add(HELP_SUFFIX = new Property<String>("help.suffix", "&9--------------------------------------------------"));
 		
 		properties.add(CMD_ADMIN_SELL = new Property<String>("command.admin-sell", "Créer un commerce admin de vente"));
+		properties.add(CMD_ADMIN_BUY = new Property<String>("command.admin-buy", "Créer un commerce admin d'achat"));
 		properties.add(CMD_DELETE = new Property<String>("command.delete", "Supprimer un commerce"));
 		properties.add(CMD_RELOAD = new Property<String>("command.reload", "Recharge le plugin"));
 		properties.add(CMD_UNDO = new Property<String>("command.undo", "Annuler une ou plusieurs transactions"));
@@ -99,7 +105,8 @@ public class Templates extends YamlConfig {
 		properties.add(CONFIRMED_RELOAD = new Property<String>("confirmed.reload", "&aVisualShop rechargé !"));
 		properties.add(CONFIRMED_SHOP_CREATION = new Property<String>("confirmed.shop-creation", "&aCommerce crée avec succès"));
 		properties.add(CONFIRMED_SHOP_DESTRUCTION = new Property<String>("confirmed.shop-destruction", "&aCommerce supprimé avec succès"));
-		properties.add(CONFIRMED_TRANSACTION = new Property<String>("confirmed.transaction", "&aAchat de &7{AMOUNT}&a &9{ITEM}&a pour &6{PRICE}&a {$} réussi"));
+		properties.add(CONFIRMED_TRANSACTION_BUY = new Property<String>("confirmed.transaction-purchase", "&aAchat de &7{AMOUNT}&a &9{ITEM}&a pour &6{PRICE}&a {$} réussi"));
+		properties.add(CONFIRMED_TRANSACTION_SELL = new Property<String>("confirmed.transaction-sale", "&aVente de &7{AMOUNT}&a &9{ITEM}&a pour &6{PRICE}&a {$} réussie"));
 		properties.add(CONFIRMED_UNDO = new Property<String>("confirmed.undo", "&aVous avez annuler la transaction de &7{AMOUNT}&a &9{ITEM}&a pour &6{PRICE}&a {$}"));
 		properties.add(CONFIRMED_UNDOS = new Property<String>("confirmed.undos", "&aVous avez annulé les {NUMBER} dernières transactions"));
 		
@@ -109,6 +116,7 @@ public class Templates extends YamlConfig {
 		properties.add(TOGGLE_FALSE = new Property<String>("toggle.false", "faux"));
 		
 		properties.add(SHOP_SELL = new Property<String>("shop.sell", "Vente"));
+		properties.add(SHOP_BUY = new Property<String>("shop.buy", "Achat"));
 		properties.add(SHOP_ADMIN = new Property<String>("shop.admin-name", "Serveur"));
 		properties.add(SHOP_SIGN_1 = new Property<String>("shop.sign.1", "{SHOP} de"));
 		properties.add(SHOP_SIGN_2 = new Property<String>("shop.sign.2", "{ITEM}"));
@@ -117,16 +125,20 @@ public class Templates extends YamlConfig {
 		
 		List<String> shopInfos = new ArrayList<String>();
 		shopInfos.add("&7+---------------[&fShop&7]---------------+");
+		shopInfos.add("Type : &e{TYPE}");
 		shopInfos.add("Prix à l'unité : &e{PRICE}");
 		shopInfos.add("Item : &e{ITEM}");
+		shopInfos.add("Propriétaire: &e{OWNER}");
 		shopInfos.add("&7+-----------------------------------+");
 		properties.add(SHOP_INFO = new Property<List<String>>("shop.info", shopInfos));
 		
 		List<String> shopInfosAdv = new ArrayList<String>();
 		shopInfosAdv.add("&7+----------[&fShop Adv. mode&7]-----------+");
 		shopInfosAdv.add("UID : &e{UUID}");
+		shopInfosAdv.add("Type : &e{TYPE}");
 		shopInfosAdv.add("Prix à l'unité : &e{PRICE}");
 		shopInfosAdv.add("Item : &e{ITEM}");
+		shopInfosAdv.add("Propriétaire: &e{OWNER}");
 		shopInfosAdv.add("&7+-----------------------------------+");
 		properties.add(SHOP_INFO_ADVANCED = new Property<List<String>>("shop.info-advanced", shopInfosAdv));
 		

@@ -1,8 +1,9 @@
 package fr.mathdu07.visualshop.exception;
 
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class VsNoItemInInventoryException extends VisualShopException {
+public class VsNoItemInInventoryException extends VsInventoryException {
 
 	/**
 	 * 
@@ -11,8 +12,8 @@ public class VsNoItemInInventoryException extends VisualShopException {
 	
 	private final ItemStack is;
 
-	public VsNoItemInInventoryException(ItemStack is) {
-		super("The item is not in the inventory : " + is.getType());
+	public VsNoItemInInventoryException(Inventory inv, ItemStack is) {
+		super("The item is not in the inventory : " + is.getType(), inv);
 		this.is = is;
 	}
 	

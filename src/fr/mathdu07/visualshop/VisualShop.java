@@ -20,6 +20,7 @@ import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.listener.BlockListener;
 import fr.mathdu07.visualshop.listener.EntityListener;
 import fr.mathdu07.visualshop.listener.PlayerListener;
+import fr.mathdu07.visualshop.shop.AdminBuyShop;
 import fr.mathdu07.visualshop.shop.AdminSellShop;
 import fr.mathdu07.visualshop.shop.ShopTask;
 
@@ -111,11 +112,11 @@ public class VisualShop extends JavaPlugin {
 	
 	public void reload() {
 		onDisable();
+		postEnable();
 		config.reload();
 		debug = config.DEBUG.value;
 		templates.reload();
 		shopSaver.reloadShops();
-		postEnable();
 	}
 	
 	public Economy getEconomy() {
@@ -199,6 +200,7 @@ public class VisualShop extends JavaPlugin {
 	
 	static {
 		ConfigurationSerialization.registerClass(AdminSellShop.class);
+		ConfigurationSerialization.registerClass(AdminBuyShop.class);
 	}
 
 }

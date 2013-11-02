@@ -17,6 +17,7 @@ public class VsCommandExecutor implements CommandExecutor {
 	
 	public VsCommandExecutor() {
 		subCommands.add(new VsAdminSellCommand());
+		subCommands.add(new VsAdminBuyCommand());
 		subCommands.add(new VsDeleteCommand());
 		subCommands.add(new VsReloadCommand());
 		subCommands.add(new VsUndoCommand());

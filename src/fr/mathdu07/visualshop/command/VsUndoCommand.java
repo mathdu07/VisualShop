@@ -9,7 +9,9 @@ import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.VsTransaction;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsEconomyException;
+import fr.mathdu07.visualshop.exception.VsInventoryFullException;
 import fr.mathdu07.visualshop.exception.VsNoItemInInventoryException;
+import fr.mathdu07.visualshop.exception.VsNotEnoughMoneyException;
 import fr.mathdu07.visualshop.exception.VsNullException;
 import fr.mathdu07.visualshop.exception.VsTooLateException;
 
@@ -35,6 +37,10 @@ public class VsUndoCommand extends VsSubCommand {
 				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_BUY_ECO.value).replace("{ERROR}", e.errorMsg));
 			} catch (VsNullException e) {
 				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOTHING_UNDO.value));
+			} catch (VsInventoryFullException e) {
+				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_INV_FULL.value));
+			} catch (VsNotEnoughMoneyException e) {
+				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_ENOUGH_MONEY.value).replace("{PRICE}", Double.toString(e.moneyRequired)));
 			}
 			
 		} else {

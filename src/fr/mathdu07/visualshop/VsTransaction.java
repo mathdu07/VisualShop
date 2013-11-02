@@ -14,7 +14,9 @@ import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsEconomyException;
+import fr.mathdu07.visualshop.exception.VsInventoryFullException;
 import fr.mathdu07.visualshop.exception.VsNoItemInInventoryException;
+import fr.mathdu07.visualshop.exception.VsNotEnoughMoneyException;
 import fr.mathdu07.visualshop.exception.VsTooLateException;
 import fr.mathdu07.visualshop.shop.SellShop;
 import fr.mathdu07.visualshop.shop.Shop;
@@ -73,9 +75,10 @@ public class VsTransaction {
 					return false;
 				}
 				
+				//TODO Pay to the owner if it's a Player Shop
 				EconomyResponse resp = eco.withdrawPlayer(p.getName(), cost);
 				if (resp.transactionSuccess()) {
-					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_TRANSACTION.value).
+					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_TRANSACTION_BUY.value).
 							replace("{AMOUNT}", Integer.toString(is.getAmount())).replace("{ITEM}", shop.getItem().getType().toString()).
 							replace("{PRICE}", Double.toString(cost)).replace("{$}", eco.currencyNamePlural()));
 					p.updateInventory();
@@ -102,8 +105,37 @@ public class VsTransaction {
 			return false;
 			
 		} else {
-			VisualShop.debug("Sell transaction not implemented yet");
-			//TODO Support sell transaction
+			
+			if (!p.getInventory().containsAtLeast(is, is.getAmount())) {
+				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_INV_NO_ITEM.value).replace("{ITEM}", is.getType().toString()));
+				return false;
+			}
+			
+			//TODO Check for player shop if the shop's owner has enough money
+			//TODO Check if the shop can take the item
+			p.getInventory().removeItem(is);
+			EconomyResponse resp = eco.depositPlayer(p.getName(), cost);
+			if (resp.transactionSuccess()) {
+				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_TRANSACTION_SELL.value).
+						replace("{AMOUNT}", Integer.toString(is.getAmount())).replace("{ITEM}", shop.getItem().getType().toString()).
+						replace("{PRICE}", Double.toString(cost)).replace("{$}", eco.currencyNamePlural()));
+				
+				p.updateInventory();
+				player.addTransaction(this);
+				
+				if (VisualShop.getVSConfig().LOG_TRANSACTIONS.value) {
+					try {
+						writer.write("New " + this);
+						writer.newLine();
+					} catch (IOException e) {e.printStackTrace();}
+				}
+				
+				return true;
+			} else {
+				p.getInventory().addItem(is);
+				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_SELL_ECO.value).replace("{ERROR}", resp.errorMessage));
+			}
+			
 			return false;
 		}
 
@@ -119,7 +151,7 @@ public class VsTransaction {
 			return (System.currentTimeMillis() - timestamp) <= VisualShop.getVSConfig().UNDO_MAX_TIME.value * 1000;
 	}
 	
-	public void undoTransation() throws VsTooLateException, VsNoItemInInventoryException, VsEconomyException {
+	public void undoTransation() throws VsTooLateException, VsNoItemInInventoryException, VsEconomyException, VsNotEnoughMoneyException, VsInventoryFullException {
 		if (!canUndoTransaction())
 			throw new VsTooLateException("Transaction too old, can not be undone");
 		
@@ -128,7 +160,7 @@ public class VsTransaction {
 		
 		if (buying) {
 			if (!p.getInventory().containsAtLeast(is, is.getAmount()))
-				throw new VsNoItemInInventoryException(is);
+				throw new VsNoItemInInventoryException(p.getInventory(), is);
 			
 			EconomyResponse result = eco.depositPlayer(p.getName(), cost);
 			
@@ -144,8 +176,29 @@ public class VsTransaction {
 			}
 			
 		} else {
-			VisualShop.debug("Sell transaction not implemented yet");
-			//TODO Support undo sell transaction
+			if (!eco.has(p.getName(), cost))
+				throw new VsNotEnoughMoneyException(cost, eco.getBalance(p.getName()));
+				
+			Map<Integer, ItemStack> exceed = p.getInventory().addItem(is);
+			if (!exceed.isEmpty()) {
+				ItemStack isExceed = is.clone();
+				isExceed.setAmount(is.getAmount() - exceed.size());
+				p.getInventory().remove(isExceed);
+				throw new VsInventoryFullException(p.getInventory(), is);
+			}
+			
+			EconomyResponse result = eco.withdrawPlayer(player.getName(), cost);
+			if (!result.transactionSuccess()) {
+				p.getInventory().remove(is);
+				throw new VsEconomyException(result.errorMessage, result.type);
+			}
+			
+			if (VisualShop.getVSConfig().LOG_TRANSACTIONS.value) {
+				try {
+					writer.write("Undo " + this);
+					writer.newLine();
+				} catch (IOException e) {e.printStackTrace();}
+			}
 		}
 	}
 
