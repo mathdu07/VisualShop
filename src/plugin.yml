@@ -55,6 +55,7 @@ permissions:
       visualshop.common.undo: true
       visualshop.common.create.*: true
       visualshop.common.sign: true
+      visualshop.common.transactions: true
   visualshop.common.use.*:
     description: Give the ability to use any type of shops
     default: false
@@ -92,4 +93,7 @@ permissions:
     default: true
   visualshop.common.sign:
     description: Auto complete the sign when placed against a shop
+    default: true
+  visualshop.common.transactions:
+    description: Allow the player to see his previous transactions
     default: true

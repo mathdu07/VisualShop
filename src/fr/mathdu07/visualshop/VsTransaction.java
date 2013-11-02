@@ -4,11 +4,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -78,9 +80,8 @@ public class VsTransaction {
 				//TODO Pay to the owner if it's a Player Shop
 				EconomyResponse resp = eco.withdrawPlayer(p.getName(), cost);
 				if (resp.transactionSuccess()) {
-					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_TRANSACTION_BUY.value).
-							replace("{AMOUNT}", Integer.toString(is.getAmount())).replace("{ITEM}", shop.getItem().getType().toString()).
-							replace("{PRICE}", Double.toString(cost)).replace("{$}", eco.currencyNamePlural()));
+					toString(p, false);
+					
 					p.updateInventory();
 					player.addTransaction(this);
 					
@@ -116,9 +117,7 @@ public class VsTransaction {
 			p.getInventory().removeItem(is);
 			EconomyResponse resp = eco.depositPlayer(p.getName(), cost);
 			if (resp.transactionSuccess()) {
-				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_TRANSACTION_SELL.value).
-						replace("{AMOUNT}", Integer.toString(is.getAmount())).replace("{ITEM}", shop.getItem().getType().toString()).
-						replace("{PRICE}", Double.toString(cost)).replace("{$}", eco.currencyNamePlural()));
+				toString(p, false);
 				
 				p.updateInventory();
 				player.addTransaction(this);
@@ -200,6 +199,22 @@ public class VsTransaction {
 				} catch (IOException e) {e.printStackTrace();}
 			}
 		}
+	}
+	
+	/**
+	 * Send the transaction message to the player
+	 * @param sender
+	 */
+	public void toString(CommandSender sender, boolean showDate) {
+		String msg = Templates.colorStr(buying ? VisualShop.getTemplates().CONFIRMED_TRANSACTION_BUY.value : VisualShop.getTemplates().CONFIRMED_TRANSACTION_SELL.value);
+		msg = msg.replace("{AMOUNT}", Integer.toString(is.getAmount()));
+		msg = msg.replace("{ITEM}", shop.getItem().getType().toString());
+		msg = msg.replace("{PRICE}", Double.toString(cost));
+		msg = msg.replace("{$}",VisualShop.getInstance().getEconomy().currencyNamePlural());
+		if (showDate)
+			msg = new Date(timestamp) + " : " + msg;
+		
+		sender.sendMessage(msg);
 	}
 
 	@Override

@@ -67,6 +67,16 @@ public class VsPlayer {
 	}
 	
 	/**
+	 * @return an array of player's transaction copy
+	 */
+	public VsTransaction[] getTransactions() {
+		VsTransaction[] array = new VsTransaction[transactions.size()];
+		transactions.copyInto(array);
+		
+		return array;
+	}
+	
+	/**
 	 * Add the transaction to the player
 	 * @param trans - the transaction done
 	 */

@@ -30,6 +30,11 @@ public class VsPermissions {
 	 */
 	public static final String COMMON_UNDO = "visualshop.common.undo";
 	
+	/**
+	 * Allow the player to see his previous transactions
+	 */
+	public static final String COMMON_TRANSACTIONS = "visualshop.common.transactions";
+	
 	
 	/**
 	 * Allow to create player sell shops

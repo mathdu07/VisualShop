@@ -34,12 +34,17 @@ public class Templates extends YamlConfig {
 	public final Property<String> HELP_PREFIX;
 	public final Property<String> HELP_SUFFIX;
 	
+	public final Property<String> TRANSACTIONS_PREFIX;
+	public final Property<String> TRANSACTIONS_SUFFIX;
+	public final Property<String> TRANSACTIONS_NOTHING;
+	
 	public final Property<String> CMD_ADMIN_SELL;
 	public final Property<String> CMD_ADMIN_BUY;
 	public final Property<String> CMD_DELETE;
 	public final Property<String> CMD_RELOAD;
 	public final Property<String> CMD_UNDO;
 	public final Property<String> CMD_TOGGLE;
+	public final Property<String> CMD_TRANSACTIONS;
 	
 	public final Property<String> CONFIRMED_RELOAD;
 	public final Property<String> CONFIRMED_SHOP_CREATION;
@@ -95,12 +100,17 @@ public class Templates extends YamlConfig {
 		properties.add(HELP_PREFIX = new Property<String>("help.prefix", "&9---------------&f VisualShop Aide {PAGE}/{PAGE_MAX} &9------------------"));
 		properties.add(HELP_SUFFIX = new Property<String>("help.suffix", "&9--------------------------------------------------"));
 		
+		properties.add(TRANSACTIONS_PREFIX = new Property<String>("transactions.prefix", "&9----------------&f Transactions {PAGE}/{PAGE_MAX} &9------------------"));
+		properties.add(TRANSACTIONS_SUFFIX = new Property<String>("transactions.suffix", "&9--------------------------------------------------"));
+		properties.add(TRANSACTIONS_NOTHING = new Property<String>("transactions.nothing", "Il n'y a aucune transactions récentes"));
+		
 		properties.add(CMD_ADMIN_SELL = new Property<String>("command.admin-sell", "Créer un commerce admin de vente"));
 		properties.add(CMD_ADMIN_BUY = new Property<String>("command.admin-buy", "Créer un commerce admin d'achat"));
 		properties.add(CMD_DELETE = new Property<String>("command.delete", "Supprimer un commerce"));
 		properties.add(CMD_RELOAD = new Property<String>("command.reload", "Recharge le plugin"));
 		properties.add(CMD_UNDO = new Property<String>("command.undo", "Annuler une ou plusieurs transactions"));
 		properties.add(CMD_TOGGLE = new Property<String>("command.toggle", "Affiche les différents paramètres, et permet de les régler"));
+		properties.add(CMD_TRANSACTIONS = new Property<String>("command.transactions", "Affiche l'historique des dernières transactions"));
 		
 		properties.add(CONFIRMED_RELOAD = new Property<String>("confirmed.reload", "&aVisualShop rechargé !"));
 		properties.add(CONFIRMED_SHOP_CREATION = new Property<String>("confirmed.shop-creation", "&aCommerce crée avec succès"));
