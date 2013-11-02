@@ -17,7 +17,7 @@ permissions:
       visualshop.common.*: true
   visualshop.admin.*:
     description: Give all admin permissions
-    default: op
+    default: false
     children:
       visualshop.admin.reload: true
       visualshop.admin.toggle: true
@@ -34,7 +34,7 @@ permissions:
     default: op
   visualshop.admin.create.*:
     description: Allow to create admin shops
-    default: op
+    default: false
     children:
       visualshop.admin.create.sell: true
       visualshop.admin.create.buy: true
@@ -49,21 +49,38 @@ permissions:
     default: op
   visualshop.common.*:
     description: Give all the common abilities
-    default: true
+    default: false
     children:
-      visualshop.common.use: true
+      visualshop.common.use.*: true
       visualshop.common.undo: true
       visualshop.common.create.*: true
       visualshop.common.sign: true
-  visualshop.common.use:
+  visualshop.common.use.*:
     description: Give the ability to use any type of shops
-    default: true
+    default: false
+    children:
+      visualshop.common.use.admin.sell: true
+      visualshop.common.use.admin.buy: true
+      visualshop.common.use.player.sell: true
+      visualshop.common.use.player.buy: true
+  visualshop.common.use.admin.sell:
+    description: Give the ability to use admin sell shops
+    default: op
+  visualshop.common.use.admin.buy:
+    description: Give the ability to use admin buy shops
+    default: op
+  visualshop.common.use.player.sell:
+    description: Give the ability to use player sell shops
+    default: op
+  visualshop.common.use.player.buy:
+    description: Give the ability to use player buy shops
+    default: op
   visualshop.common.undo:
     description: Give the ability to undo previous transactions
     default: true
   visualshop.common.create.*:
     description: Give the ability to create player shops
-    default: true
+    default: false
     children:
       visualshop.common.create.sell: true
       visualshop.common.create.buy: true

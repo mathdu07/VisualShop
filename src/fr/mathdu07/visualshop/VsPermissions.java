@@ -5,11 +5,25 @@ package fr.mathdu07.visualshop;
  */
 public class VsPermissions {
 	
-	//TODO Check also the permission related to the shop type
 	/**
-	 * Give the ability to use any type of shops
+	 * Give the ability to use admin sell shops
 	 */
-	public static final String COMMON_USE = "visualshop.common.use";
+	public static final String COMMON_USE_ADMIN_SELL = "visualshop.common.use.admin.sell";
+	
+	/**
+	 * Give the ability to use admin buy shops
+	 */
+	public static final String COMMON_USE_ADMIN_BUY = "visualshop.common.use.admin.buy";
+	
+	/**
+	 * Give the ability to use player sell shops
+	 */
+	public static final String COMMON_USE_PLAYER_SELL = "visualshop.common.use.player.sell";
+	
+	/**
+	 * Give the ability to use player buy shops
+	 */
+	public static final String COMMON_USE_PLAYER_BUY = "visualshop.common.use.player.buy";
 	
 	/**
 	 * Give the ability to undo previous transactions 

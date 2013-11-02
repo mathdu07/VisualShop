@@ -16,6 +16,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
 
 public abstract class Shop implements ConfigurationSerializable{
@@ -193,6 +194,12 @@ public abstract class Shop implements ConfigurationSerializable{
 		if (VisualShop.getVSConfig().LOG_SHOP_CREATION.value)
 			VisualShop.info("Shop deleted : " + this);
 	}
+	
+	/**
+	 * @param p - the player to check
+	 * @return if the player can use the shop, buy/sell the item ...
+	 */
+	public abstract boolean canUse(VsPlayer p);
 	
 	@Override
 	public boolean equals(Object o) {

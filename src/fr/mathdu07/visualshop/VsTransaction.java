@@ -56,7 +56,7 @@ public class VsTransaction {
 		final Economy eco = VisualShop.getInstance().getEconomy();
 		final Player p = player.getBukkitPlayer();
 		
-		if (!p.hasPermission(VsPermissions.COMMON_USE)) {
+		if (!shop.canUse(VsPlayer.getPlayer(p))) {
 			p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_PERMISSION.value));
 			return false;
 		}

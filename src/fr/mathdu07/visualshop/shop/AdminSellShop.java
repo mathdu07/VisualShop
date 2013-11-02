@@ -9,6 +9,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
+import fr.mathdu07.visualshop.VsPermissions;
+import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
 
 public class AdminSellShop extends AdminShop implements SellShop {
@@ -36,6 +38,12 @@ public class AdminSellShop extends AdminShop implements SellShop {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+
+	@Override
+	public boolean canUse(VsPlayer p) {
+		return p.getBukkitPlayer().hasPermission(VsPermissions.COMMON_USE_ADMIN_SELL);
 	}
 
 }
