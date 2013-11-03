@@ -1,5 +1,13 @@
 package fr.mathdu07.visualshop;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -90,11 +98,47 @@ public class VisualShop extends JavaPlugin {
 		postEnable();
 	}
 	
-	private void postEnable () {
+	private void postEnable () {		
 		shopSaver.onEnable();
+		
+		if (config.MYSQL_CONVERT_OLD.value) {
+			convertOldShops();
+			config.MYSQL_CONVERT_OLD.value = false;
+			try {
+				config.save();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		task = getServer().getScheduler().runTaskTimer(this, new ShopTask(), 20l, config.UPDATE_DELTA.value * 20l);
 		if (config.LOG_TRANSACTIONS.value)
 			VsTransaction.startLog();
+	}
+	
+	private void convertOldShops() {
+		info("Converting old shops storage system ...");
+		File old = new File(getDataFolder(), "shops.yml.old"), now = new File(getDataFolder(), "shops.yml");
+		
+		try {
+			Files.copy(now.toPath(), old.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			
+			BufferedReader reader = new BufferedReader(new FileReader(old));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(now));
+			String line = null;
+			
+			while ((line = reader.readLine()) != null) 
+				writer.write(line.replace("fr.mathdu07.visualshop.Shop", "fr.mathdu07.visualshop.shop.Shop") + System.lineSeparator());
+			
+			reader.close();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		new fr.mathdu07.visualshop.config.old.ShopSaver(this);
+		now.delete();
+		info("Converted !");
 	}
 	
 	@Override
@@ -113,10 +157,12 @@ public class VisualShop extends JavaPlugin {
 	public void reload() {
 		onDisable();
 		postEnable();
+		info("Reloading configs");
 		config.reload();
 		debug = config.DEBUG.value;
 		templates.reload();
 		shopSaver.reloadShops();
+		info("Reloading done !");
 	}
 	
 	public Economy getEconomy() {

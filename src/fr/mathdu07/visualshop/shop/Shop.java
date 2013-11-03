@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Item;
@@ -317,6 +318,25 @@ public abstract class Shop implements ConfigurationSerializable{
 		}
 		
 		shops.clear();
+	}
+	
+	/**
+	 * Deserialize an old shop (older than 1.1)
+	 * Will be removed soon
+	 * @param map
+	 * @return New AdminSellShop from the old
+	 */
+	@Deprecated
+	public static Shop deserialize(Map<String, Object> map) {
+		World world = Bukkit.getWorld((String) map.get("world"));
+		int x = (int) map.get("x"), y = (int) map.get("y"), z = (int) map.get("z");
+		
+		try {
+			return new AdminSellShop((double) map.get("price"), (ItemStack) map.get("item"), world.getBlockAt(x, y, z));
+		} catch (VsNegativeOrNullValueException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 

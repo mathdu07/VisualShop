@@ -76,6 +76,11 @@ public class Config extends YamlConfig {
 	 * The prefix of the tables used by the plugin
 	 */
 	public final Property<String> MYSQL_TABLE_PREFIX;
+	
+	/**
+	 * Convert the old YaML data to MySQL ? 
+	 */
+	public final Property<Boolean> MYSQL_CONVERT_OLD;
 
 	public Config(VisualShop plugin) {
 		super(plugin);
@@ -94,6 +99,7 @@ public class Config extends YamlConfig {
 		properties.add(MYSQL_PASSWORD = new Property<String>("mysql.password", "user_password"));
 		properties.add(MYSQL_DATABASE = new Property<String>("mysql.database", "minecraft"));
 		properties.add(MYSQL_TABLE_PREFIX = new Property<String>("mysql.table-prefix", "vs_"));
+		properties.add(MYSQL_CONVERT_OLD = new Property<Boolean>("mysql.convert-old-shops", false));
 		
 		initConfig(plugin, "config.yml");
 	}
