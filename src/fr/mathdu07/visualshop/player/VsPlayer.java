@@ -2,12 +2,18 @@ package fr.mathdu07.visualshop.player;
 
 import java.util.EmptyStackException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.VisualShop;
@@ -20,6 +26,10 @@ import fr.mathdu07.visualshop.exception.VsNoItemInInventoryException;
 import fr.mathdu07.visualshop.exception.VsNotEnoughMoneyException;
 import fr.mathdu07.visualshop.exception.VsNullException;
 import fr.mathdu07.visualshop.exception.VsTooLateException;
+import fr.mathdu07.visualshop.player.ability.DescribeShopAbility;
+import fr.mathdu07.visualshop.player.ability.DoShopTransactionAbility;
+import fr.mathdu07.visualshop.player.ability.NoPickupShopAbility;
+import fr.mathdu07.visualshop.player.ability.VsPlayerAbility;
 import fr.mathdu07.visualshop.shop.AdminBuyShop;
 import fr.mathdu07.visualshop.shop.AdminSellShop;
 import fr.mathdu07.visualshop.shop.Shop;
@@ -57,7 +67,13 @@ public class VsPlayer {
 	 */
 	private boolean toggleAdvanced = false;
 	
-	private Stack<VsTransaction> transactions;
+	private final Stack<VsTransaction> transactions;
+	
+	/**
+	 * The abilities of the player <br />
+	 * E.g: NoPickupShopAbility to block player taking shop's item entity
+	 */
+	private final Set<VsPlayerAbility> abilities;
 	
 	private VsPlayer(Player p) {
 		this(p.getName());
@@ -66,6 +82,15 @@ public class VsPlayer {
 	private VsPlayer(String playerName) {
 		this.name = playerName;
 		this.transactions = new Stack<VsTransaction>();
+		this.abilities = new HashSet<VsPlayerAbility>();
+		
+		addAbilities();
+	}
+	
+	private void addAbilities() {
+		abilities.add(new NoPickupShopAbility(this));
+		abilities.add(new DescribeShopAbility(this));
+		abilities.add(new DoShopTransactionAbility(this));
 	}
 	
 	/**
@@ -244,6 +269,51 @@ public class VsPlayer {
 	 */
 	public void setWouldDeleteShop(boolean deleteShop) {
 		this.wouldDeleteShop = deleteShop;
+	}
+	
+	/**
+	 * Handles the player event
+	 * @param e - PlayerEvent
+	 */
+	public void handlePlayerEvent(PlayerEvent e) {
+		if (!e.getPlayer().getName().equals(name))
+			return;
+		
+		Iterator<VsPlayerAbility> it = abilities.iterator();
+		while (it.hasNext()) {
+			VsPlayerAbility ability = it.next();
+			
+			if (e instanceof PlayerInteractEvent)
+				ability.onPlayerInteract((PlayerInteractEvent) e);
+			else if (e instanceof PlayerPickupItemEvent)
+				ability.onPlayerPickUp((PlayerPickupItemEvent) e);
+		}
+	}
+	
+	/**
+	 * Adds the player ability
+	 * @param ability
+	 * @return if the ability has been added
+	 */
+	public boolean addAbility(VsPlayerAbility ability) {
+		return abilities.add(ability);
+	}
+	
+	/**
+	 * @param ability
+	 * @return if the player has the given ability
+	 */
+	public boolean containsAbility(VsPlayerAbility ability) {
+		return abilities.contains(ability);
+	}
+	
+	/**
+	 * Remove the player ability
+	 * @param ability
+	 * @return if the player ability has been removed
+	 */
+	public boolean removeAbility(VsPlayerAbility ability) {
+		return abilities.remove(ability);
 	}
 	
 	/**

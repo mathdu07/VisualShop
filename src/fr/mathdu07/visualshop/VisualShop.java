@@ -8,6 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -16,10 +19,17 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Item;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
+import fr.mathdu07.visualshop.block.ability.ProtectShopAbility;
+import fr.mathdu07.visualshop.block.ability.SignShopAbility;
+import fr.mathdu07.visualshop.block.ability.VsBlockAbility;
 import fr.mathdu07.visualshop.command.VsCommandExecutor;
 import fr.mathdu07.visualshop.config.Config;
 import fr.mathdu07.visualshop.config.MysqlShopSaver;
@@ -48,6 +58,7 @@ public class VisualShop extends JavaPlugin {
 	
 	private boolean debug = false;
 	private BukkitTask task;
+	private Set<VsBlockAbility> blockAbilities;
 	
 	private static VisualShop instance;
 
@@ -91,6 +102,10 @@ public class VisualShop extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(blockListener, this);
+		
+		blockAbilities = new HashSet<VsBlockAbility>();
+		blockAbilities.add(new SignShopAbility());
+		blockAbilities.add(new ProtectShopAbility());
 		
 		command = new VsCommandExecutor();
 		getServer().getPluginCommand("visualshop").setExecutor(command);
@@ -163,6 +178,25 @@ public class VisualShop extends JavaPlugin {
 		templates.reload();
 		shopSaver.reloadShops();
 		info("Reloading done !");
+	}
+	
+	/**
+	 * Handles the block event
+	 * @param e
+	 */
+	public void handleBlockEvent(BlockEvent e) {
+		Iterator<VsBlockAbility> it = blockAbilities.iterator();
+		
+		while (it.hasNext()) {
+			VsBlockAbility ability = it.next();
+			
+			if (BlockBreakEvent.class.isInstance(e))
+				ability.onBlockBroken((BlockBreakEvent) e);
+			else if (BlockPlaceEvent.class.isInstance(e))
+				ability.onBlockPlaced((BlockPlaceEvent) e);
+			else if (SignChangeEvent.class.isInstance(e))
+				ability.onSignChange((SignChangeEvent) e);
+		}
 	}
 	
 	public Economy getEconomy() {

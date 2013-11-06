@@ -1,10 +1,7 @@
 package fr.mathdu07.visualshop.listener;
 
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,11 +12,9 @@ import org.bukkit.util.Vector;
 
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsPermissions;
-import fr.mathdu07.visualshop.VsTransaction;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.player.VsPlayer;
 import fr.mathdu07.visualshop.shop.AdminShop;
-import fr.mathdu07.visualshop.shop.SellShop;
 import fr.mathdu07.visualshop.shop.Shop;
 
 public class PlayerListener implements Listener {
@@ -30,6 +25,8 @@ public class PlayerListener implements Listener {
 		
 		Player p = e.getPlayer();
 		VsPlayer vp = VsPlayer.getPlayer(p);
+		
+		vp.handlePlayerEvent(e);
 		
 		if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 			Block b = e.getClickedBlock();
@@ -68,38 +65,6 @@ public class PlayerListener implements Listener {
 				
 				e.setCancelled(true);
 				
-			} else if (Shop.shopExistsAt(b)) {
-				Shop shop = Shop.getShop(b);
-				
-				List<String> infos = (vp.toggleAdvanced() ? VisualShop.getTemplates().SHOP_INFO_ADVANCED.value : VisualShop.getTemplates().SHOP_INFO.value);
-				p.sendMessage(Templates.listToArray(
-						Templates.replaceStrArray(
-						Templates.replaceStrArray(
-						Templates.replaceStrArray(
-						Templates.replaceStrArray(		
-						Templates.replaceStrArray(Templates.colorStrArray(infos),
-						"{PRICE}", Double.toString(shop.getPricePerUnit())),
-						"{ITEM}", shop.getItem().getType().toString()),
-						"{UUID}", shop.getUUID().toString()),
-						"{OWNER}", VisualShop.getTemplates().SHOP_ADMIN.value), //TODO Check if it's a player shop
-						"{TYPE}", (SellShop.class.isInstance(shop) ? VisualShop.getTemplates().SHOP_SELL.value : VisualShop.getTemplates().SHOP_BUY.value))));
-				
-				e.setCancelled(true);
-			}
-		} else if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			Block b = e.getClickedBlock();
-			
-			if (p.getItemInHand().getType().equals(Material.SIGN) && p.hasPermission(VsPermissions.COMMON_SIGN))
-				return;
-			
-			if (Shop.shopExistsAt(b)) {
-				
-				Shop shop = Shop.getShop(b);
-				int amount = 1;
-				VsTransaction transaction = new VsTransaction(shop, amount, vp);
-				transaction.applyTransaction();
-				
-				e.setCancelled(true);
 			}
 		}
 	}
@@ -108,12 +73,8 @@ public class PlayerListener implements Listener {
 	public void onPlayerPickupItem(PlayerPickupItemEvent e) {
 		if (e == null)	return;
 		
-		final Item i = e.getItem();
-		
-		if (Shop.shopOwnsItem(i)) {
-			e.setCancelled(true);
-			i.setPickupDelay(2000);
-		}
+		final VsPlayer p = VsPlayer.getPlayer(e.getPlayer());
+		p.handlePlayerEvent(e);
 	}
 
 }
