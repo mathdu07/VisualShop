@@ -17,8 +17,8 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.VisualShop;
-import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
+import fr.mathdu07.visualshop.player.VsPlayer;
 
 public abstract class Shop implements ConfigurationSerializable{
 	

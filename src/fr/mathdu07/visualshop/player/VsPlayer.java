@@ -1,4 +1,4 @@
-package fr.mathdu07.visualshop;
+package fr.mathdu07.visualshop.player;
 
 import java.util.EmptyStackException;
 import java.util.HashMap;
@@ -10,6 +10,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import fr.mathdu07.visualshop.VisualShop;
+import fr.mathdu07.visualshop.VsTransaction;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsEconomyException;
 import fr.mathdu07.visualshop.exception.VsInventoryFullException;

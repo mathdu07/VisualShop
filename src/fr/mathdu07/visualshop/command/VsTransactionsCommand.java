@@ -5,9 +5,9 @@ import org.bukkit.entity.Player;
 
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsPermissions;
-import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.VsTransaction;
 import fr.mathdu07.visualshop.config.Templates;
+import fr.mathdu07.visualshop.player.VsPlayer;
 
 public class VsTransactionsCommand extends VsSubCommand {
 

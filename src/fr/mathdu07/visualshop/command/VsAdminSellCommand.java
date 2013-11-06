@@ -7,9 +7,9 @@ import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsPermissions;
-import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
+import fr.mathdu07.visualshop.player.VsPlayer;
 import fr.mathdu07.visualshop.util.VsItemStack;
 
 public class VsAdminSellCommand extends VsSubCommand {

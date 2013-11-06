@@ -10,8 +10,8 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.VsPermissions;
-import fr.mathdu07.visualshop.VsPlayer;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
+import fr.mathdu07.visualshop.player.VsPlayer;
 
 public class AdminSellShop extends AdminShop implements SellShop {
 

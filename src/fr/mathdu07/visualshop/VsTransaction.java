@@ -20,6 +20,7 @@ import fr.mathdu07.visualshop.exception.VsInventoryFullException;
 import fr.mathdu07.visualshop.exception.VsNoItemInInventoryException;
 import fr.mathdu07.visualshop.exception.VsNotEnoughMoneyException;
 import fr.mathdu07.visualshop.exception.VsTooLateException;
+import fr.mathdu07.visualshop.player.VsPlayer;
 import fr.mathdu07.visualshop.shop.SellShop;
 import fr.mathdu07.visualshop.shop.Shop;
 
