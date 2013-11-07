@@ -1,4 +1,4 @@
-package fr.mathdu07.visualshop.block.ability;
+package fr.mathdu07.visualshop.ability;
 
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;

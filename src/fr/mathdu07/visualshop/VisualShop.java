@@ -23,13 +23,19 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import fr.mathdu07.visualshop.block.ability.ProtectShopAbility;
-import fr.mathdu07.visualshop.block.ability.SignShopAbility;
-import fr.mathdu07.visualshop.block.ability.VsBlockAbility;
+import fr.mathdu07.visualshop.ability.ProtectShopAbility;
+import fr.mathdu07.visualshop.ability.ShopItemWontDespawnAbility;
+import fr.mathdu07.visualshop.ability.SignShopAbility;
+import fr.mathdu07.visualshop.ability.VsBlockAbility;
+import fr.mathdu07.visualshop.ability.VsEntityAbility;
 import fr.mathdu07.visualshop.command.VsCommandExecutor;
 import fr.mathdu07.visualshop.config.Config;
 import fr.mathdu07.visualshop.config.MysqlShopSaver;
@@ -59,6 +65,7 @@ public class VisualShop extends JavaPlugin {
 	private boolean debug = false;
 	private BukkitTask task;
 	private Set<VsBlockAbility> blockAbilities;
+	private Set<VsEntityAbility> entityAbilities;
 	
 	private static VisualShop instance;
 
@@ -102,15 +109,25 @@ public class VisualShop extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(blockListener, this);
-		
-		blockAbilities = new HashSet<VsBlockAbility>();
-		blockAbilities.add(new SignShopAbility());
-		blockAbilities.add(new ProtectShopAbility());
+	
+		initAbilities();
 		
 		command = new VsCommandExecutor();
 		getServer().getPluginCommand("visualshop").setExecutor(command);
 		
 		postEnable();
+	}
+	
+	private void initAbilities() {
+		ProtectShopAbility psa = new ProtectShopAbility();
+		
+		blockAbilities = new HashSet<VsBlockAbility>();
+		blockAbilities.add(new SignShopAbility());
+		blockAbilities.add(psa);
+		
+		entityAbilities = new HashSet<VsEntityAbility>();
+		entityAbilities.add(new ShopItemWontDespawnAbility());
+		entityAbilities.add(psa);
 	}
 	
 	private void postEnable () {		
@@ -196,6 +213,25 @@ public class VisualShop extends JavaPlugin {
 				ability.onBlockPlaced((BlockPlaceEvent) e);
 			else if (SignChangeEvent.class.isInstance(e))
 				ability.onSignChange((SignChangeEvent) e);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param e
+	 */
+	public void handleEntityEvent(EntityEvent e) {
+		Iterator<VsEntityAbility> it = entityAbilities.iterator();
+		
+		while (it.hasNext()) {
+			VsEntityAbility ability = it.next();
+			
+			if (e instanceof EntityChangeBlockEvent)
+				ability.onEntityChangeBlock((EntityChangeBlockEvent) e);
+			else if (e instanceof EntityExplodeEvent)
+				ability.onEntityExplode((EntityExplodeEvent) e);
+			else if (e instanceof ItemDespawnEvent)
+				ability.onItemDespawn((ItemDespawnEvent) e);
 		}
 	}
 	
