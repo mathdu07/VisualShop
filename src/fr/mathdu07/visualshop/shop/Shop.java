@@ -62,7 +62,7 @@ public abstract class Shop implements ConfigurationSerializable{
 	 */
 	public Shop (UUID uid, double pricePerUnit, ItemStack itemstack, Block block) throws VsNegativeOrNullValueException {
 		if (pricePerUnit <= 0)
-			throw new VsNegativeOrNullValueException();
+			throw new VsNegativeOrNullValueException(pricePerUnit);
 		
 		this.uuid = uid;
 		this.pricePerUnit = pricePerUnit;

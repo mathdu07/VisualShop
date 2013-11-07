@@ -9,19 +9,16 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.bukkit.Bukkit;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsTransaction;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsEconomyException;
 import fr.mathdu07.visualshop.exception.VsInventoryFullException;
-import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
 import fr.mathdu07.visualshop.exception.VsNoItemInInventoryException;
 import fr.mathdu07.visualshop.exception.VsNotEnoughMoneyException;
 import fr.mathdu07.visualshop.exception.VsNullException;
@@ -30,37 +27,16 @@ import fr.mathdu07.visualshop.player.ability.DescribeShopAbility;
 import fr.mathdu07.visualshop.player.ability.DoShopTransactionAbility;
 import fr.mathdu07.visualshop.player.ability.NoPickupShopAbility;
 import fr.mathdu07.visualshop.player.ability.VsPlayerAbility;
-import fr.mathdu07.visualshop.shop.AdminBuyShop;
-import fr.mathdu07.visualshop.shop.AdminSellShop;
-import fr.mathdu07.visualshop.shop.Shop;
 
 public class VsPlayer {
 	
 	private static Map<String, VsPlayer> players = new HashMap<>();
 	
+	/**
+	 * The player's name
+	 */
 	private final String name;
-	
-	/**
-	 * The class that defines the type of shop the player would create
-	 */
-	private Class<? extends Shop> createShopClass = null;
-	
-	/**
-	 * The itemstack of the shop that the player would create
-	 * If null the player will not create shop
-	 */
-	private ItemStack createShopIS = null;
-	/**
-	 * The price of the shop that the player would create
-	 * If null the player will not create shop
-	 */
-	private double createShopPrice = 0d;
-	
-	/**
-	 * Whether the player would delete the clicked shop
-	 */
-	private boolean wouldDeleteShop = false;
-	
+		
 	/**
 	 * If the player is in advanced mode
 	 * Used to display more info about shops (like uid)
@@ -75,6 +51,11 @@ public class VsPlayer {
 	 */
 	private final Set<VsPlayerAbility> abilities;
 	
+	/**
+	 * A stack of the abilities that needs to be removed
+	 */
+	private final Stack<VsPlayerAbility> abilitiesToRemove;
+	
 	private VsPlayer(Player p) {
 		this(p.getName());
 	}
@@ -83,6 +64,7 @@ public class VsPlayer {
 		this.name = playerName;
 		this.transactions = new Stack<VsTransaction>();
 		this.abilities = new HashSet<VsPlayerAbility>();
+		this.abilitiesToRemove = new Stack<VsPlayerAbility>();
 		
 		addAbilities();
 	}
@@ -198,84 +180,13 @@ public class VsPlayer {
 	}
 	
 	/**
-	 * Assign an admin sell shop to the player 
-	 * @param is - shop's itemstack
-	 * @param price - shop's price
-	 * @throws VsNegativeOrNullValueException if the price is smaller or equal to 0
-	 */
-	public void assignAdminSellShopCreation(ItemStack is, double price) throws VsNegativeOrNullValueException {
-		if (price <= 0)
-			throw new VsNegativeOrNullValueException();
-		
-		this.createShopIS = is;
-		this.createShopPrice = price;
-		this.createShopClass = AdminSellShop.class;
-	}
-	
-	/**
-	 * Assign an amdin buy shop to the player 
-	 * @param is - shop's itemstack
-	 * @param price - shop's price
-	 * @throws VsNegativeOrNullValueException if the price is smaller or equal to 0
-	 */
-	public void assignAdminBuyShopCreation(ItemStack is, double price) throws VsNegativeOrNullValueException {
-		if (price <= 0)
-			throw new VsNegativeOrNullValueException();
-		
-		this.createShopIS = is;
-		this.createShopPrice = price;
-		this.createShopClass = AdminBuyShop.class;
-	}
-	
-	/**
-	 * @return if the player would create a shop at the clicked block
-	 */
-	public boolean shouldCreateShop() {
-		return createShopIS != null && createShopPrice != 0;
-	}
-	
-	/**
-	 * @param b - the block where create the shop
-	 * @return the shop that the player create
-	 */
-	public Shop createShop(Block b) {
-		Shop s = null;
-		
-		try {
-			if (createShopClass.equals(AdminSellShop.class))
-				s = new AdminSellShop(createShopPrice, createShopIS, b);
-			else if (createShopClass.equals(AdminBuyShop.class))
-				s = new AdminBuyShop(createShopPrice, createShopIS, b);
-			else
-				VisualShop.debug("Unknown shop class to create : " + createShopClass);
-				
-			this.createShopIS = null;
-			this.createShopPrice = 0.d;
-		} catch (VsNegativeOrNullValueException e) {e.printStackTrace();}
-		
-		return s;
-	}
-	
-	/**
-	 * @return if the shop selected shoud be deleted
-	 */
-	public boolean shouldDeleteShop() {
-		return wouldDeleteShop;
-	}
-	
-	/**
-	 * Set if the next selected shop should be deleted
-	 * @param deleteShop - whether the next shop should be deleted
-	 */
-	public void setWouldDeleteShop(boolean deleteShop) {
-		this.wouldDeleteShop = deleteShop;
-	}
-	
-	/**
 	 * Handles the player event
 	 * @param e - PlayerEvent
 	 */
 	public void handlePlayerEvent(PlayerEvent e) {
+		while (!abilitiesToRemove.isEmpty())
+			abilities.remove(abilitiesToRemove.pop());
+		
 		if (!e.getPlayer().getName().equals(name))
 			return;
 		
@@ -308,12 +219,11 @@ public class VsPlayer {
 	}
 	
 	/**
-	 * Remove the player ability
+	 * Remove the player ability at the next PlayerEvent
 	 * @param ability
-	 * @return if the player ability has been removed
 	 */
-	public boolean removeAbility(VsPlayerAbility ability) {
-		return abilities.remove(ability);
+	public void removeAbility(VsPlayerAbility ability) {
+		abilitiesToRemove.push(ability);
 	}
 	
 	/**

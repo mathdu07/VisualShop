@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.player.VsPlayer;
+import fr.mathdu07.visualshop.player.ability.DeleteShopAbility;
 
 public class VsDeleteCommand extends VsSubCommand {
 
@@ -18,7 +19,7 @@ public class VsDeleteCommand extends VsSubCommand {
 
 		VsPlayer p = VsPlayer.getPlayer((Player) sender);
 		p.getBukkitPlayer().sendMessage(Templates.colorStr(VisualShop.getTemplates().DIV_DELETE_SHOP.value));
-		p.setWouldDeleteShop(true);
+		p.addAbility(new DeleteShopAbility(p));
 	}
 
 	@Override

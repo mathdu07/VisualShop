@@ -10,6 +10,7 @@ import fr.mathdu07.visualshop.VsPermissions;
 import fr.mathdu07.visualshop.config.Templates;
 import fr.mathdu07.visualshop.exception.VsNegativeOrNullValueException;
 import fr.mathdu07.visualshop.player.VsPlayer;
+import fr.mathdu07.visualshop.player.ability.CreateAdminSellShopAbility;
 import fr.mathdu07.visualshop.util.VsItemStack;
 
 public class VsAdminSellCommand extends VsSubCommand {
@@ -46,7 +47,7 @@ public class VsAdminSellCommand extends VsSubCommand {
 			}
 			
 			try {
-				p.assignAdminSellShopCreation(is, price);
+				p.addAbility(new CreateAdminSellShopAbility(p, price, is));
 				sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().DIV_CREATE_SHOP.value));
 			} catch (VsNegativeOrNullValueException e) {
 				sender.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NUMBER_NEGATIVE.value));
