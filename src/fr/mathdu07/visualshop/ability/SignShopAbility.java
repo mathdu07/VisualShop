@@ -13,7 +13,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import fr.mathdu07.visualshop.VisualShop;
 import fr.mathdu07.visualshop.VsPermissions;
 import fr.mathdu07.visualshop.config.Templates;
-import fr.mathdu07.visualshop.shop.AdminShop;
+import fr.mathdu07.visualshop.player.VsPlayer;
 import fr.mathdu07.visualshop.shop.SellShop;
 import fr.mathdu07.visualshop.shop.Shop;
 
@@ -37,13 +37,7 @@ public class SignShopAbility implements VsBlockAbility {
 	}
 	
 	private boolean shouldCompleteSign(final Shop s, final Player p) {
-		boolean ownShop = false;
-		
-		if (s instanceof AdminShop)
-			ownShop = p.hasPermission(VsPermissions.ADMIN_CREATE_SELL) || p.hasPermission(VsPermissions.ADMIN_CREATE_BUY);
-		//TODO Check if the player owns the shop
-		//else if (s instanceof PlayerShop)
-		//	ownShop = ...
+		boolean ownShop = s.ownsShop(VsPlayer.getPlayer(p));
 			
 		return p.hasPermission(VsPermissions.COMMON_SIGN) && ownShop;
 	}

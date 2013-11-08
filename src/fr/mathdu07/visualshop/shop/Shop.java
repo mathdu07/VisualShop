@@ -197,6 +197,12 @@ public abstract class Shop implements ConfigurationSerializable{
 	}
 	
 	/**
+	 * @param p
+	 * @return if the player owns the shop
+	 */
+	public abstract boolean ownsShop(VsPlayer p); 
+	
+	/**
 	 * @param p - the player to check
 	 * @return if the player can use the shop, buy/sell the item ...
 	 */

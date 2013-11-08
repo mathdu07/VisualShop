@@ -30,6 +30,7 @@ public class Templates extends YamlConfig {
 	
 	public final Property<String> DIV_CREATE_SHOP;
 	public final Property<String> DIV_DELETE_SHOP;
+	public final Property<String> DIV_SET_PRICE;
 	
 	public final Property<String> HELP_PREFIX;
 	public final Property<String> HELP_SUFFIX;
@@ -45,6 +46,7 @@ public class Templates extends YamlConfig {
 	public final Property<String> CMD_UNDO;
 	public final Property<String> CMD_TOGGLE;
 	public final Property<String> CMD_TRANSACTIONS;
+	public final Property<String> CMD_SET_PRICE;
 	
 	public final Property<String> CONFIRMED_RELOAD;
 	public final Property<String> CONFIRMED_SHOP_CREATION;
@@ -53,6 +55,7 @@ public class Templates extends YamlConfig {
 	public final Property<String> CONFIRMED_TRANSACTION_SELL;
 	public final Property<String> CONFIRMED_UNDO;
 	public final Property<String> CONFIRMED_UNDOS;
+	public final Property<String> CONFIRMED_PRICE_SET;
 	
 	public final Property<String> TOGGLE_SEE;
 	public final Property<String> TOGGLE_CONFIRMED;
@@ -96,6 +99,7 @@ public class Templates extends YamlConfig {
 		
 		properties.add(DIV_CREATE_SHOP = new Property<String>("divers.create-shop", "Click gauche sur un bloc pour créer le commerce"));
 		properties.add(DIV_DELETE_SHOP = new Property<String>("divers.delete-shop", "Click gauche pour supprimer le commerce"));
+		properties.add(DIV_SET_PRICE = new Property<String>("divers.set-price", "Click gauche sur le commerce pour modifier son prix"));
 		
 		properties.add(HELP_PREFIX = new Property<String>("help.prefix", "&9---------------&f VisualShop Aide {PAGE}/{PAGE_MAX} &9------------------"));
 		properties.add(HELP_SUFFIX = new Property<String>("help.suffix", "&9--------------------------------------------------"));
@@ -111,6 +115,7 @@ public class Templates extends YamlConfig {
 		properties.add(CMD_UNDO = new Property<String>("command.undo", "Annuler une ou plusieurs transactions"));
 		properties.add(CMD_TOGGLE = new Property<String>("command.toggle", "Affiche les différents paramètres, et permet de les régler"));
 		properties.add(CMD_TRANSACTIONS = new Property<String>("command.transactions", "Affiche l'historique des dernières transactions"));
+		properties.add(CMD_SET_PRICE = new Property<String>("command.set-price", "Change le prix d'un commerce"));
 		
 		properties.add(CONFIRMED_RELOAD = new Property<String>("confirmed.reload", "&aVisualShop rechargé !"));
 		properties.add(CONFIRMED_SHOP_CREATION = new Property<String>("confirmed.shop-creation", "&aCommerce crée avec succès"));
@@ -119,6 +124,7 @@ public class Templates extends YamlConfig {
 		properties.add(CONFIRMED_TRANSACTION_SELL = new Property<String>("confirmed.transaction-sale", "&aVente de &7{AMOUNT}&a &9{ITEM}&a pour &6{PRICE}&a {$} réussie"));
 		properties.add(CONFIRMED_UNDO = new Property<String>("confirmed.undo", "&aVous avez annuler la transaction de &7{AMOUNT}&a &9{ITEM}&a pour &6{PRICE}&a {$}"));
 		properties.add(CONFIRMED_UNDOS = new Property<String>("confirmed.undos", "&aVous avez annulé les {NUMBER} dernières transactions"));
+		properties.add(CONFIRMED_PRICE_SET = new Property<String>("confirmed.price-set", "&aVous avez mis le prix à {PRICE}"));
 		
 		properties.add(TOGGLE_SEE = new Property<String>("toggle.see-toggles", "Liste des options :"));
 		properties.add(TOGGLE_CONFIRMED = new Property<String>("toggle.confirmed", "&aL'option {TOGGLE} a été mis sur &9{VALUE}"));

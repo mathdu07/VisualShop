@@ -23,6 +23,7 @@ public class VsCommandExecutor implements CommandExecutor {
 		subCommands.add(new VsUndoCommand());
 		subCommands.add(new VsToggleCommand());
 		subCommands.add(new VsTransactionsCommand());
+		subCommands.add(new VsSetPriceCommand());
 	}
 
 	public boolean onCommand(CommandSender send, Command cmd, String label, String[] args) {
@@ -57,7 +58,7 @@ public class VsCommandExecutor implements CommandExecutor {
 	 * @param args
 	 */
 	private void showHelp(CommandSender send, String label, String[] args) {
-		final int commandsPerPage = 8, pages = (int) Math.ceil(subCommands.size()/(commandsPerPage * 1.0));
+		final int commandsPerPage = 5, pages = (int) Math.ceil(subCommands.size()/(commandsPerPage * 1.0));
 		int page = 1;
 		
 		if (args.length >= 2) {

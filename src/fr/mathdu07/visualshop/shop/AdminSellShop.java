@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import fr.mathdu07.visualshop.VsPermissions;
@@ -40,7 +41,12 @@ public class AdminSellShop extends AdminShop implements SellShop {
 		}
 	}
 
-
+	@Override
+	public boolean ownsShop(VsPlayer p) {
+		Player player = p.getBukkitPlayer();
+		return player.hasPermission(VsPermissions.ADMIN_CREATE_SELL);
+	}
+	
 	@Override
 	public boolean canUse(VsPlayer p) {
 		return p.getBukkitPlayer().hasPermission(VsPermissions.COMMON_USE_ADMIN_SELL);
