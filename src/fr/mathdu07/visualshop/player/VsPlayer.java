@@ -1,11 +1,11 @@
 package fr.mathdu07.visualshop.player;
 
+import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 import org.bukkit.Bukkit;
@@ -49,7 +49,7 @@ public class VsPlayer {
 	 * The abilities of the player <br />
 	 * E.g: NoPickupShopAbility to block player taking shop's item entity
 	 */
-	private final Set<VsPlayerAbility> abilities;
+	private final List<VsPlayerAbility> abilities;
 	
 	/**
 	 * A stack of the abilities that needs to be removed
@@ -63,7 +63,7 @@ public class VsPlayer {
 	private VsPlayer(String playerName) {
 		this.name = playerName;
 		this.transactions = new Stack<VsTransaction>();
-		this.abilities = new HashSet<VsPlayerAbility>();
+		this.abilities = new ArrayList<VsPlayerAbility>();
 		this.abilitiesToRemove = new Stack<VsPlayerAbility>();
 		
 		addAbilities();
@@ -194,20 +194,22 @@ public class VsPlayer {
 		while (it.hasNext()) {
 			VsPlayerAbility ability = it.next();
 			
-			if (e instanceof PlayerInteractEvent)
-				ability.onPlayerInteract((PlayerInteractEvent) e);
-			else if (e instanceof PlayerPickupItemEvent)
-				ability.onPlayerPickUp((PlayerPickupItemEvent) e);
+			if (e instanceof PlayerInteractEvent) {
+				if (!ability.onPlayerInteract((PlayerInteractEvent) e))
+					break;
+			} else if (e instanceof PlayerPickupItemEvent) {
+				if(!ability.onPlayerPickUp((PlayerPickupItemEvent) e))
+					break;
+			}
 		}
 	}
 	
 	/**
 	 * Adds the player ability
 	 * @param ability
-	 * @return if the ability has been added
 	 */
-	public boolean addAbility(VsPlayerAbility ability) {
-		return abilities.add(ability);
+	public void addAbility(VsPlayerAbility ability) {
+		abilities.add(0, ability);
 	}
 	
 	/**

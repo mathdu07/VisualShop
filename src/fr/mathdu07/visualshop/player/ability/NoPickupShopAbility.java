@@ -14,19 +14,20 @@ public class NoPickupShopAbility extends VsPlayerAbility {
 	}
 
 	@Override
-	public void onPlayerInteract(PlayerInteractEvent e) {
-		
-
+	public boolean onPlayerInteract(PlayerInteractEvent e) {
+		return true;
 	}
 
 	@Override
-	public void onPlayerPickUp(PlayerPickupItemEvent e) {
+	public boolean onPlayerPickUp(PlayerPickupItemEvent e) {
 		final Item i = e.getItem();
 		
 		if (Shop.shopOwnsItem(i)) {
 			e.setCancelled(true);
 			i.setPickupDelay(2000);
 		}
+		
+		return true;
 	}
 
 }

@@ -31,7 +31,7 @@ public class SetPriceAbility extends VsPlayerAbility {
 	}
 
 	@Override
-	public void onPlayerInteract(PlayerInteractEvent e) {
+	public boolean onPlayerInteract(PlayerInteractEvent e) {
 		
 		if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			final Block b = e.getClickedBlock();
@@ -51,13 +51,16 @@ public class SetPriceAbility extends VsPlayerAbility {
 			
 			e.setCancelled(true);
 			remove();
+			
+			return false;
 		}
-
+		
+		return true;
 	}
 
 	@Override
-	public void onPlayerPickUp(PlayerPickupItemEvent e) {
-		
+	public boolean onPlayerPickUp(PlayerPickupItemEvent e) {
+		return true;
 	}
 
 }

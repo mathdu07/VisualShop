@@ -16,14 +16,16 @@ public abstract class VsPlayerAbility {
 	/**
 	 * Called when a player interacts with a block or an item
 	 * @param e - the bukkit event
+	 * @return if next abilities should be called
 	 */
-	public abstract void onPlayerInteract(PlayerInteractEvent e);
+	public abstract boolean onPlayerInteract(PlayerInteractEvent e);
 	
 	/**
 	 * Called when a player picks up an item entity
 	 * @param e - the bukkit event
+	 * @return if next abilities should be called
 	 */
-	public abstract void onPlayerPickUp(PlayerPickupItemEvent e);
+	public abstract boolean onPlayerPickUp(PlayerPickupItemEvent e);
 	
 	protected void remove() {
 		player.removeAbility(this);

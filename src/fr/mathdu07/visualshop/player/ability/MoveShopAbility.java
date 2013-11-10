@@ -21,50 +21,55 @@ public class MoveShopAbility extends VsPlayerAbility {
 	}
 
 	@Override
-	public void onPlayerInteract(PlayerInteractEvent e) {
+	public boolean onPlayerInteract(PlayerInteractEvent e) {
 		
 		if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			final Block b = e.getClickedBlock();
 			final Player p = player.getBukkitPlayer();
 			
+			e.setCancelled(true);
 			if (selected == null) {
 				final Shop s = Shop.getShop(b);
 				
 				if (s == null) {
 					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_SHOP_MISSING.value));
 					remove();
-					return;
+					return true;
 				} else if (!s.ownsShop(player)) {
 					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_SHOP_NOT_OWNED.value));
 					remove();
-					return;
+					return false;
 				}
 				
 				selected = s;				
 				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().DIV_MOVE_2.value));
+				return false;
 			} else {
 				
 				if (Shop.shopExistsAt(b)) {
 					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_SHOP_PRESENT.value));
 					remove();
-					return;
+					return false;
 				} else if (!b.getLocation().add(0, 1, 0).getBlock().getType().equals(Material.AIR)) {
 					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NO_AIR_ABOVE.value));
 					remove();
-					return;
+					return true;
 				}
 				
 				selected.move(b);
 				p.sendMessage(Templates.colorStr(VisualShop.getTemplates().CONFIRMED_MOVE.value));
 				remove();
+				return false;
 			}
 		}
+		
+		return true;
 
 	}
 
 	@Override
-	public void onPlayerPickUp(PlayerPickupItemEvent e) {
-		
+	public boolean onPlayerPickUp(PlayerPickupItemEvent e) {
+		return true;		
 	}
 
 }

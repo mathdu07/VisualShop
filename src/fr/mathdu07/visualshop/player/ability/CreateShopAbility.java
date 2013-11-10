@@ -38,7 +38,7 @@ public abstract class CreateShopAbility extends VsPlayerAbility {
 	}
 
 	@Override
-	public void onPlayerInteract(PlayerInteractEvent e) {
+	public boolean onPlayerInteract(PlayerInteractEvent e) {
 		final Player p = player.getBukkitPlayer();
 		
 		if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
@@ -59,14 +59,16 @@ public abstract class CreateShopAbility extends VsPlayerAbility {
 			e.setCancelled(true);
 			remove();
 		}
+		
+		return true;
 
 	}
 	
 	protected abstract Shop createShop(Block b);
 
 	@Override
-	public void onPlayerPickUp(PlayerPickupItemEvent e) {
-		
+	public boolean onPlayerPickUp(PlayerPickupItemEvent e) {
+		return true;
 	}
 
 }

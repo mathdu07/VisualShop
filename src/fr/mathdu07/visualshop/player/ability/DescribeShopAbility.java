@@ -23,14 +23,14 @@ public class DescribeShopAbility extends VsPlayerAbility {
 	}
 
 	@Override
-	public void onPlayerInteract(PlayerInteractEvent e) {
+	public boolean onPlayerInteract(PlayerInteractEvent e) {
 		
 		if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 			final Block b = e.getClickedBlock();
 			final Player p = player.getBukkitPlayer();
 			
 			if (p.getItemInHand().getType().equals(Material.SIGN) && p.hasPermission(VsPermissions.COMMON_SIGN))
-				return;
+				return true;
 			
 			if (Shop.shopExistsAt(b)) {
 				final Shop shop = Shop.getShop(b);
@@ -51,12 +51,13 @@ public class DescribeShopAbility extends VsPlayerAbility {
 				e.setCancelled(true);
 			}
 		}
-
+		
+		return true;
 	}
 
 	@Override
-	public void onPlayerPickUp(PlayerPickupItemEvent e) {
-
+	public boolean onPlayerPickUp(PlayerPickupItemEvent e) {
+		return true;
 	}
 
 }

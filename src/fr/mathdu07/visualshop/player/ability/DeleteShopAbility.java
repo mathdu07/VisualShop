@@ -20,7 +20,7 @@ public class DeleteShopAbility extends VsPlayerAbility {
 	}
 
 	@Override
-	public void onPlayerInteract(PlayerInteractEvent e) {
+	public boolean onPlayerInteract(PlayerInteractEvent e) {
 		
 		if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
 			final Block b = e.getClickedBlock();
@@ -31,7 +31,7 @@ public class DeleteShopAbility extends VsPlayerAbility {
 				if (AdminShop.class.isInstance(Shop.getShop(b)) && !p.hasPermission(VsPermissions.ADMIN_DELETE)) {
 					p.sendMessage(Templates.colorStr(VisualShop.getTemplates().ERR_NOT_PERMISSION.value));
 					remove();
-					return;
+					return false;
 				}
 				
 				//TODO Check when it's a player shop
@@ -44,11 +44,13 @@ public class DeleteShopAbility extends VsPlayerAbility {
 			e.setCancelled(true);
 			remove();
 		}
+		
+		return true;
 	}
 
 	@Override
-	public void onPlayerPickUp(PlayerPickupItemEvent e) {
-		
+	public boolean onPlayerPickUp(PlayerPickupItemEvent e) {
+		return true;
 	}
 
 }
