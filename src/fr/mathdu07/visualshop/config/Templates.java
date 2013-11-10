@@ -27,10 +27,13 @@ public class Templates extends YamlConfig {
 	public final Property<String> ERR_INV_NO_ITEM;
 	public final Property<String> ERR_UNDO_TOO_LATE;
 	public final Property<String> ERR_NOTHING_UNDO;
+	public final Property<String> ERR_SHOP_NOT_OWNED;
 	
 	public final Property<String> DIV_CREATE_SHOP;
 	public final Property<String> DIV_DELETE_SHOP;
 	public final Property<String> DIV_SET_PRICE;
+	public final Property<String> DIV_MOVE_1;
+	public final Property<String> DIV_MOVE_2;
 	
 	public final Property<String> HELP_PREFIX;
 	public final Property<String> HELP_SUFFIX;
@@ -47,6 +50,7 @@ public class Templates extends YamlConfig {
 	public final Property<String> CMD_TOGGLE;
 	public final Property<String> CMD_TRANSACTIONS;
 	public final Property<String> CMD_SET_PRICE;
+	public final Property<String> CMD_MOVE;
 	
 	public final Property<String> CONFIRMED_RELOAD;
 	public final Property<String> CONFIRMED_SHOP_CREATION;
@@ -56,6 +60,7 @@ public class Templates extends YamlConfig {
 	public final Property<String> CONFIRMED_UNDO;
 	public final Property<String> CONFIRMED_UNDOS;
 	public final Property<String> CONFIRMED_PRICE_SET;
+	public final Property<String> CONFIRMED_MOVE;
 	
 	public final Property<String> TOGGLE_SEE;
 	public final Property<String> TOGGLE_CONFIRMED;
@@ -96,10 +101,13 @@ public class Templates extends YamlConfig {
 		properties.add(ERR_INV_NO_ITEM = new Property<String>("error.inventory-no-item", "&4Vous n'avez pas de {ITEM} dans votre inventaire"));
 		properties.add(ERR_UNDO_TOO_LATE = new Property<String>("error.undo-too-late", "&4Vous ne pouvez annuler une transaction datant de plus de {TIME} secondes"));
 		properties.add(ERR_NOTHING_UNDO = new Property<String>("error.nothing-to-undo", "&4Aucune transaction à annuler"));
+		properties.add(ERR_SHOP_NOT_OWNED = new Property<String>("error.shop-not-owned", "&4Ce commerce ne vous appartient pas"));
 		
 		properties.add(DIV_CREATE_SHOP = new Property<String>("divers.create-shop", "Click gauche sur un bloc pour créer le commerce"));
 		properties.add(DIV_DELETE_SHOP = new Property<String>("divers.delete-shop", "Click gauche pour supprimer le commerce"));
 		properties.add(DIV_SET_PRICE = new Property<String>("divers.set-price", "Click gauche sur le commerce pour modifier son prix"));
+		properties.add(DIV_MOVE_1 = new Property<String>("divers.move-1", "Clic gauche sur le commerce à déplacer"));
+		properties.add(DIV_MOVE_2 = new Property<String>("divers.move-2", "Clic gauche sur le nouveau  bloc du commerce"));
 		
 		properties.add(HELP_PREFIX = new Property<String>("help.prefix", "&9---------------&f VisualShop Aide {PAGE}/{PAGE_MAX} &9------------------"));
 		properties.add(HELP_SUFFIX = new Property<String>("help.suffix", "&9--------------------------------------------------"));
@@ -116,6 +124,7 @@ public class Templates extends YamlConfig {
 		properties.add(CMD_TOGGLE = new Property<String>("command.toggle", "Affiche les différents paramètres, et permet de les régler"));
 		properties.add(CMD_TRANSACTIONS = new Property<String>("command.transactions", "Affiche l'historique des dernières transactions"));
 		properties.add(CMD_SET_PRICE = new Property<String>("command.set-price", "Change le prix d'un commerce"));
+		properties.add(CMD_MOVE = new Property<String>("command.move", "Déplacer un commerce"));
 		
 		properties.add(CONFIRMED_RELOAD = new Property<String>("confirmed.reload", "&aVisualShop rechargé !"));
 		properties.add(CONFIRMED_SHOP_CREATION = new Property<String>("confirmed.shop-creation", "&aCommerce crée avec succès"));
@@ -125,6 +134,7 @@ public class Templates extends YamlConfig {
 		properties.add(CONFIRMED_UNDO = new Property<String>("confirmed.undo", "&aVous avez annuler la transaction de &7{AMOUNT}&a &9{ITEM}&a pour &6{PRICE}&a {$}"));
 		properties.add(CONFIRMED_UNDOS = new Property<String>("confirmed.undos", "&aVous avez annulé les {NUMBER} dernières transactions"));
 		properties.add(CONFIRMED_PRICE_SET = new Property<String>("confirmed.price-set", "&aVous avez mis le prix à {PRICE}"));
+		properties.add(CONFIRMED_MOVE = new Property<String>("confirmed.move", "&aLe commerce a bien été déplacé"));
 		
 		properties.add(TOGGLE_SEE = new Property<String>("toggle.see-toggles", "Liste des options :"));
 		properties.add(TOGGLE_CONFIRMED = new Property<String>("toggle.confirmed", "&aL'option {TOGGLE} a été mis sur &9{VALUE}"));

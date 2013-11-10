@@ -182,6 +182,7 @@ public abstract class Shop implements ConfigurationSerializable{
 	public void move(Block block) {
 		this.block = block;
 		VisualShop.getShopSaver().updateShop(this);
+		update();
 	}
 	
 	/**
