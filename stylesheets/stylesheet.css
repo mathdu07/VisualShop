@@ -102,6 +102,10 @@ header h2 {
   margin-bottom: 40px;
 }
 
+#source-downloads {
+  margin-bottom: 40px;
+}
+
 a.button {
   -moz-border-radius: 30px;
   -webkit-border-radius: 30px;                     
@@ -162,6 +166,19 @@ a.button span {
   background: transparent url(../images/octocat-icon.png) 12px 50% no-repeat;
 }
 #view-on-github {
+  margin-right: 0;
+}
+
+#latest-stable span {
+  background: transparent url(../images/latest-stable-icon.png) 16px 50% no-repeat;
+}
+#latest-beta span {
+  background: transparent url(../images/latest-beta-icon.png) 16px 50% no-repeat;
+}
+#all-release span {
+  background: transparent url(../images/all-release-icon.png) 12px 50% no-repeat;
+}
+#all-release {
   margin-right: 0;
 }
 
